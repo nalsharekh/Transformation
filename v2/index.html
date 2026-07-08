@@ -99,6 +99,23 @@ select.inp{-webkit-appearance:none}
 .lad-row.done .lad-name{color:var(--txt2)}
 .lad-sub{font-size:9px;color:var(--txt3);margin-top:1px}
 .lad-pct{font-size:12px;font-family:var(--f1);font-weight:800;color:var(--purple);flex-shrink:0}
+/* LOG SCREEN */
+.mood-btn{flex:1;font-size:22px;padding:8px 0;background:var(--s2);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .15s;filter:grayscale(1);opacity:.55}
+.mood-btn.sel{border-color:var(--green);background:#0d1a0d;filter:none;opacity:1;transform:scale(1.05)}
+.qtoggle{width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--border);background:var(--s2);color:var(--txt3);font-family:var(--f2);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.qtoggle.on{border-color:var(--green);background:#0d1a0d;color:var(--green)}
+.meal-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 11px;background:var(--s2);border:1px solid var(--border);border-radius:10px;margin-bottom:6px}
+.meal-item .mn{font-size:12px;font-weight:600;color:var(--txt);line-height:1.3}
+.meal-item .ms{font-size:9px;color:var(--txt3);margin-top:2px}
+.meal-item .mk{font-size:13px;color:var(--orange);font-family:var(--f1);font-weight:700;flex-shrink:0}
+.mi-btn{background:none;border:none;color:var(--txt3);font-size:14px;cursor:pointer;padding:4px 6px;flex-shrink:0}
+.shake-row{display:grid;grid-template-columns:1fr 52px 40px 40px 40px;gap:5px;align-items:center;margin-bottom:6px}
+.shake-row .inp{padding:7px 8px;font-size:11px}
+.shake-hd{display:grid;grid-template-columns:1fr 52px 40px 40px 40px;gap:5px;font-size:8px;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.ai-note{font-size:10px;color:var(--blue);margin-top:6px;line-height:1.5;display:none}
+@media (min-width:600px){
+  #log-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+}
 /* TOAST */
 #toast{position:fixed;bottom:calc(var(--nav) + var(--sb) + 14px);left:50%;transform:translateX(-50%) translateY(20px);background:#0e0e12;border:1px solid var(--border2);color:var(--txt);padding:10px 18px;border-radius:12px;font-size:12px;font-family:var(--f2);opacity:0;pointer-events:none;transition:all .25s;z-index:300;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -203,7 +220,7 @@ nav,body,.screen{transition:none}
           <div style="font-size:11px;color:var(--txt3);margin-bottom:10px;line-height:1.6">Fresh start. Three quick steps and the app is yours.</div>
           <div id="setup-list"></div>
         </div>
-        <div class="stub"><div class="se">⚡</div><div class="st1">Next update: the Log screen</div><div class="st2">20-second quick-log, Fitbit screenshot reader,<br>and your one-tap morning shake.</div></div>
+        <div class="stub"><div class="se">🏋️</div><div class="st1">Next update: the Move screen</div><div class="st2">Hypermobility-safe sessions with<br>Log / Swap / Skip on every exercise.</div></div>
       </div>
     </div>
   </div>
@@ -212,8 +229,71 @@ nav,body,.screen{transition:none}
 <!-- LOG -->
 <div class="screen" id="s-log">
   <div class="ph"><div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:1px solid var(--border)"><div><div style="font-size:9px;letter-spacing:.14em;color:var(--txt3);text-transform:uppercase">Daily Entry</div><div class="big" style="margin-top:2px">Log</div></div><button class="hdr-gear" onclick="nav('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button></div></div>
-  <div class="ps" style="margin-top:10px"><div class="stub"><div class="se">⚡</div><div class="st1">Coming up</div><div class="st2">20-second quick-log: sleep, Meds, mood —<br>plus the Fitbit screenshot reader.</div></div></div>
+  <div class="ps" style="margin-top:10px">
+    <div class="frow" style="margin-bottom:10px"><input class="inp" type="date" id="log-date" onchange="renderLog()"></div>
+    <div id="log-grid">
+    <div>
+    <div class="card card-lg">
+      <div class="lbl" style="color:var(--green)">▸ QUICK LOG — 20 SECONDS</div>
+      <div class="g2" style="margin-bottom:10px">
+        <div><label class="inp-label">In bed</label><input class="inp" type="time" id="ql-bed" onchange="qlSleep()"></div>
+        <div><label class="inp-label">Woke up</label><input class="inp" type="time" id="ql-wake" onchange="qlSleep()"></div>
+      </div>
+      <div style="font-size:10px;color:var(--txt3);margin-bottom:10px" id="ql-dur"></div>
+      <div style="margin-bottom:10px"><button class="qtoggle" id="ql-meds" onclick="qlMeds()">Meds</button></div>
+      <div><label class="inp-label">Mood</label>
+        <div style="display:flex;gap:6px">
+          <button class="mood-btn" onclick="qlMood(1)" id="mood-1">😖</button>
+          <button class="mood-btn" onclick="qlMood(2)" id="mood-2">😕</button>
+          <button class="mood-btn" onclick="qlMood(3)" id="mood-3">😐</button>
+          <button class="mood-btn" onclick="qlMood(4)" id="mood-4">🙂</button>
+          <button class="mood-btn" onclick="qlMood(5)" id="mood-5">😄</button>
+        </div>
+      </div>
+    </div>
+    <div class="card card-lb">
+      <div class="sec-hd"><div class="lbl" style="color:var(--blue);margin-bottom:0">▸ FITBIT</div><button class="sec-act" onclick="document.getElementById('fb-photo').click()">📷 Read my screenshot</button></div>
+      <input type="file" accept="image/*" id="fb-photo" style="display:none" onchange="onFitbitPhoto(this)">
+      <div class="g3" style="margin-bottom:10px">
+        <div><label class="inp-label">Steps</label><input class="inp" type="number" id="fb-steps" placeholder="—"></div>
+        <div><label class="inp-label">Sleep h</label><input class="inp" type="number" step=".1" id="fb-sleep" placeholder="—"></div>
+        <div><label class="inp-label">Rest HR</label><input class="inp" type="number" id="fb-hr" placeholder="—"></div>
+      </div>
+      <div class="ai-note" id="fb-ai-note"></div>
+      <button class="btn btn-g btn-full" onclick="fbSave()">Save Fitbit</button>
+    </div>
+    </div>
+    <div>
+    <div class="card card-lp">
+      <div class="sec-hd"><div class="lbl" style="color:var(--purple);margin-bottom:0">▸ MY SHAKE</div><button class="sec-act" onclick="openShakeEditor()">Edit ingredients</button></div>
+      <div style="font-size:10px;color:var(--txt3);margin-bottom:10px;line-height:1.5" id="shake-macros"></div>
+      <button class="btn btn-p btn-full" style="font-size:13px;padding:13px" onclick="logShake()">🥤 Log My Shake</button>
+    </div>
+    <div class="card card-lo">
+      <div class="sec-hd"><div class="lbl" style="margin-bottom:0">▸ MEALS</div><div style="font-size:10px;color:var(--txt3)" id="meal-totals"></div></div>
+      <div id="meal-list" style="margin-bottom:10px"></div>
+      <div style="border-top:1px solid var(--border);padding-top:10px">
+        <div class="sec-hd"><div style="font-size:9px;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase">Add meal / eat out</div><button class="sec-act" onclick="document.getElementById('food-photo').click()">📷 Photo</button></div>
+        <input type="file" accept="image/*" capture="environment" id="food-photo" style="display:none" onchange="onFoodPhoto(this)">
+        <div class="ai-note" id="food-ai-note"></div>
+        <div class="frow"><input class="inp" id="cm-name" placeholder="e.g. Wagamama chicken ramen"></div>
+        <div class="g2" style="margin-bottom:8px">
+          <div><div class="mi-wrap"><input class="inp" id="cm-kcal" type="number" placeholder="kcal"><span class="mi-unit">kcal</span></div></div>
+          <div><input class="inp" type="time" id="cm-time"></div>
+        </div>
+        <div class="g3" style="margin-bottom:10px">
+          <div><div class="mi-wrap"><input class="inp" id="cm-p" type="number" placeholder="P"><span class="mi-unit">g</span></div></div>
+          <div><div class="mi-wrap"><input class="inp" id="cm-c" type="number" placeholder="C"><span class="mi-unit">g</span></div></div>
+          <div><div class="mi-wrap"><input class="inp" id="cm-f" type="number" placeholder="F"><span class="mi-unit">g</span></div></div>
+        </div>
+        <button class="btn btn-g btn-full" onclick="addMeal()">Log Meal</button>
+      </div>
+    </div>
+    </div>
+    </div>
+  </div>
 </div>
+
 
 <!-- MOVE -->
 <div class="screen" id="s-move">
@@ -302,12 +382,44 @@ nav,body,.screen{transition:none}
   <button class="nav-btn" onclick="nav('health',this)" id="nb-health"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg><span class="nl">Health</span><div class="nav-badge" id="badge-health"></div></button>
 </nav>
 
+<!-- MODALS -->
+<div class="modal" id="m-shake"><div class="msheet"><div class="mhandle"></div>
+  <div class="lbl" style="color:var(--purple)">▸ MY SHAKE — INGREDIENTS</div>
+  <div style="font-size:10px;color:var(--txt3);margin-bottom:10px;line-height:1.5">Fix any numbers against the real labels. Totals recalculate.</div>
+  <div class="shake-hd"><span>Ingredient</span><span>kcal</span><span>P</span><span>C</span><span>F</span></div>
+  <div id="shake-rows"></div>
+  <div style="font-size:11px;color:var(--txt2);margin:8px 0" id="shake-edit-totals"></div>
+  <div style="display:flex;gap:8px;margin-top:4px">
+    <button class="btn btn-g" style="flex:1" onclick="saveShakeEditor()">Save</button>
+    <button class="btn btn-s" onclick="closeModal('m-shake')">Cancel</button>
+  </div>
+</div></div>
+
+<div class="modal" id="m-meal"><div class="msheet"><div class="mhandle"></div>
+  <div class="lbl">▸ EDIT MEAL</div>
+  <div class="frow"><label class="inp-label">Name</label><input class="inp" id="em-name"></div>
+  <div class="g2" style="margin-bottom:10px">
+    <div><label class="inp-label">Time</label><input class="inp" type="time" id="em-time"></div>
+    <div><label class="inp-label">Calories</label><div class="mi-wrap"><input class="inp" id="em-kcal" type="number"><span class="mi-unit">kcal</span></div></div>
+  </div>
+  <div class="g3" style="margin-bottom:10px">
+    <div><label class="inp-label">Protein</label><div class="mi-wrap"><input class="inp" id="em-p" type="number"><span class="mi-unit">g</span></div></div>
+    <div><label class="inp-label">Carbs</label><div class="mi-wrap"><input class="inp" id="em-c" type="number"><span class="mi-unit">g</span></div></div>
+    <div><label class="inp-label">Fat</label><div class="mi-wrap"><input class="inp" id="em-f" type="number"><span class="mi-unit">g</span></div></div>
+  </div>
+  <div style="display:flex;gap:8px">
+    <button class="btn btn-g" style="flex:1" onclick="saveMealEdit()">Save</button>
+    <button class="btn btn-r" onclick="deleteMealFromModal()">Delete</button>
+    <button class="btn btn-s" onclick="closeModal('m-meal')">Cancel</button>
+  </div>
+</div></div>
+
 <div id="toast"></div>
 
 <script>
 'use strict';
 // ═══ TRANSFORM v2 — no personal data lives in this file. All data: private repo + this device. ═══
-const V2_VERSION='2.1.0';
+const V2_VERSION='2.2.0';
 
 // ─── STORAGE (single doc) ─────────────────────────────────────────────────────
 const LS={
@@ -329,6 +441,7 @@ function defaultData(){
     journal:[],
     bloods:[],
     checkups:[],
+    presets:{shake:null},
     meta:{updatedAt:new Date(0).toISOString(),device:null,createdAt:new Date().toISOString()}
   };
 }
@@ -504,6 +617,271 @@ function renderLadder(){
   }
 }
 
+// ─── LOG SCREEN ───────────────────────────────────────────────────────────────
+let UID_N=0;
+function uid(){UID_N=(UID_N+1)%1000;return Date.now()*1000+UID_N;}
+function logDate(){const el=document.getElementById('log-date');return (el&&el.value)?el.value:todayISO();}
+function afterLogSave(){save();if(logDate()===todayISO()){renderDash();renderLadder();}}
+function qlSleep(){
+  const lg=ensureLog(logDate());
+  lg.sleepBed=document.getElementById('ql-bed').value||null;
+  lg.sleepWake=document.getElementById('ql-wake').value||null;
+  document.getElementById('ql-dur').textContent=sleepDurText(lg.sleepBed,lg.sleepWake);
+  afterLogSave();
+}
+function sleepDurText(bed,wake){
+  if(!bed||!wake)return'';
+  const b=bed.split(':'),w=wake.split(':');
+  let m=(+w[0]*60+ +w[1])-(+b[0]*60+ +b[1]);
+  if(m<=0)m+=1440;
+  return'≈ '+Math.floor(m/60)+'h '+String(m%60).padStart(2,'0')+'m in bed';
+}
+function qlMeds(){
+  const lg=ensureLog(logDate());
+  lg.meds=!lg.meds;
+  document.getElementById('ql-meds').className='qtoggle'+(lg.meds?' on':'');
+  document.getElementById('ql-meds').textContent=lg.meds?'Meds ✓':'Meds';
+  afterLogSave();
+}
+function qlMood(n){
+  const lg=ensureLog(logDate());
+  lg.mood=lg.mood===n?null:n;
+  for(let i=1;i<=5;i++)document.getElementById('mood-'+i).className='mood-btn'+(lg.mood===i?' sel':'');
+  afterLogSave();
+}
+function fbSave(){
+  const lg=ensureLog(logDate());
+  const s=parseInt(document.getElementById('fb-steps').value);
+  const sl=parseFloat(document.getElementById('fb-sleep').value);
+  const h=parseInt(document.getElementById('fb-hr').value);
+  lg.fitbit=lg.fitbit||{};
+  if(s>0)lg.fitbit.steps=s;
+  if(sl>0)lg.fitbit.sleepH=sl;
+  if(h>0)lg.fitbit.rhr=h;
+  afterLogSave();
+  toast('Fitbit saved ✓','ok');
+  document.getElementById('fb-ai-note').style.display='none';
+}
+// ─── SHAKE PRESET ─────────────────────────────────────────────────────────────
+function shakeDefault(){
+  return{ingredients:[
+    {name:'Whey protein · 1 scoop',kcal:100,p:20,c:2,f:1.5},
+    {name:'Collagen · 1 scoop',kcal:36,p:9,c:0,f:0},
+    {name:'Creatine · 1 scoop',kcal:0,p:0,c:0,f:0},
+    {name:'Almond milk · 250ml',kcal:33,p:1.3,c:0.8,f:2.8},
+    {name:'Chia cubes (soaked) · 3',kcal:85,p:2.7,c:6.5,f:4.9},
+    {name:'Ground flax · 1 tbsp',kcal:53,p:1.8,c:2.9,f:4.2},
+    {name:'Berries · handful',kcal:40,p:0.5,c:9,f:0.3},
+    {name:'Spinach · handful',kcal:7,p:0.9,c:1.1,f:0.1},
+    {name:'AG1 · 1 sachet',kcal:50,p:2,c:6,f:0},
+    {name:'Cinnamon, turmeric, ginger, pepper',kcal:8,p:0.3,c:1.5,f:0.2}
+  ]};
+}
+function getShake(){if(!DATA.presets)DATA.presets={};if(!DATA.presets.shake)DATA.presets.shake=shakeDefault();return DATA.presets.shake;}
+function shakeTotals(){
+  const t={kcal:0,p:0,c:0,f:0};
+  getShake().ingredients.forEach(function(i){t.kcal+=+i.kcal||0;t.p+=+i.p||0;t.c+=+i.c||0;t.f+=+i.f||0;});
+  return t;
+}
+function logShake(){
+  const t=shakeTotals();
+  const lg=ensureLog(logDate());
+  lg.meals.push({id:uid(),time:new Date().toTimeString().slice(0,5),name:'My Shake',kcal:Math.round(t.kcal),p:Math.round(t.p),c:Math.round(t.c),f:Math.round(t.f),src:'shake'});
+  afterLogSave();renderMeals();
+  toast('Shake logged — '+Math.round(t.kcal)+' kcal / '+Math.round(t.p)+'g protein ✓','ok');
+}
+function openShakeEditor(){
+  const rows=document.getElementById('shake-rows');
+  rows.innerHTML=getShake().ingredients.map(function(i,ix){
+    return'<div class="shake-row">'+
+    '<input class="inp" value="'+i.name.replace(/"/g,'&quot;')+'" id="sh-n-'+ix+'">'+
+    '<input class="inp" type="number" value="'+i.kcal+'" id="sh-k-'+ix+'" oninput="shakeEditTotals()">'+
+    '<input class="inp" type="number" value="'+i.p+'" id="sh-p-'+ix+'" oninput="shakeEditTotals()">'+
+    '<input class="inp" type="number" value="'+i.c+'" id="sh-c-'+ix+'" oninput="shakeEditTotals()">'+
+    '<input class="inp" type="number" value="'+i.f+'" id="sh-f-'+ix+'" oninput="shakeEditTotals()">'+
+    '</div>';
+  }).join('');
+  shakeEditTotals();
+  openModal('m-shake');
+}
+function shakeEditTotals(){
+  const n=getShake().ingredients.length;let k=0,p=0,c=0,f=0;
+  for(let i=0;i<n;i++){
+    k+=parseFloat(document.getElementById('sh-k-'+i).value)||0;
+    p+=parseFloat(document.getElementById('sh-p-'+i).value)||0;
+    c+=parseFloat(document.getElementById('sh-c-'+i).value)||0;
+    f+=parseFloat(document.getElementById('sh-f-'+i).value)||0;
+  }
+  document.getElementById('shake-edit-totals').textContent='Totals: '+Math.round(k)+' kcal · '+Math.round(p)+'g P · '+Math.round(c)+'g C · '+Math.round(f)+'g F';
+}
+function saveShakeEditor(){
+  const sh=getShake();
+  sh.ingredients=sh.ingredients.map(function(i,ix){
+    return{name:document.getElementById('sh-n-'+ix).value||i.name,
+      kcal:parseFloat(document.getElementById('sh-k-'+ix).value)||0,
+      p:parseFloat(document.getElementById('sh-p-'+ix).value)||0,
+      c:parseFloat(document.getElementById('sh-c-'+ix).value)||0,
+      f:parseFloat(document.getElementById('sh-f-'+ix).value)||0};
+  });
+  save();closeModal('m-shake');renderShakeCard();
+  toast('Shake updated ✓','ok');
+}
+function renderShakeCard(){
+  const t=shakeTotals();
+  const el=document.getElementById('shake-macros');
+  if(el)el.textContent=Math.round(t.kcal)+' kcal · '+Math.round(t.p)+'g protein · '+Math.round(t.c)+'g carbs · '+Math.round(t.f)+'g fat — one tap logs it.';
+}
+// ─── MEALS ────────────────────────────────────────────────────────────────────
+let editingMealId=null;
+function addMeal(){
+  const name=document.getElementById('cm-name').value.trim();
+  const kcal=parseInt(document.getElementById('cm-kcal').value);
+  if(!name||!kcal){toast('Need a name and calories','err');return;}
+  const lg=ensureLog(logDate());
+  lg.meals.push({id:uid(),time:document.getElementById('cm-time').value||new Date().toTimeString().slice(0,5),name:name,kcal:kcal,
+    p:parseInt(document.getElementById('cm-p').value)||0,c:parseInt(document.getElementById('cm-c').value)||0,f:parseInt(document.getElementById('cm-f').value)||0,src:'custom'});
+  ['cm-name','cm-kcal','cm-p','cm-c','cm-f'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('food-ai-note').style.display='none';
+  afterLogSave();renderMeals();
+  toast('Meal logged ✓','ok');
+}
+function renderMeals(){
+  const lg=DATA.logs[logDate()]||{meals:[]};
+  const list=document.getElementById('meal-list');if(!list)return;
+  const meals=(lg.meals||[]).slice().sort(function(a,b){return(a.time||'')<(b.time||'')?-1:1;});
+  list.innerHTML=meals.length?meals.map(function(m){
+    return'<div class="meal-item"><div style="flex:1;min-width:0"><div class="mn">'+esc(m.name)+'</div><div class="ms">'+(m.time||'')+' · '+(m.p||0)+'P / '+(m.c||0)+'C / '+(m.f||0)+'F</div></div><div class="mk">'+m.kcal+'</div><button class="mi-btn" onclick="openMealEdit('+m.id+')">✎</button></div>';
+  }).join(''):'<div style="font-size:11px;color:var(--txt3)">Nothing logged yet.</div>';
+  const t=meals.reduce(function(a,m){a.k+=m.kcal||0;a.p+=m.p||0;a.c+=m.c||0;a.f+=m.f||0;return a;},{k:0,p:0,c:0,f:0});
+  document.getElementById('meal-totals').textContent=meals.length?t.k+' kcal · '+t.p+'P '+t.c+'C '+t.f+'F':'';
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function openMealEdit(id){
+  const lg=DATA.logs[logDate()];if(!lg)return;
+  const m=(lg.meals||[]).find(function(x){return x.id===id;});if(!m)return;
+  editingMealId=id;
+  document.getElementById('em-name').value=m.name;
+  document.getElementById('em-time').value=m.time||'';
+  document.getElementById('em-kcal').value=m.kcal;
+  document.getElementById('em-p').value=m.p||0;
+  document.getElementById('em-c').value=m.c||0;
+  document.getElementById('em-f').value=m.f||0;
+  openModal('m-meal');
+}
+function saveMealEdit(){
+  const lg=DATA.logs[logDate()];if(!lg)return;
+  const m=(lg.meals||[]).find(function(x){return x.id===editingMealId;});if(!m)return;
+  m.name=document.getElementById('em-name').value||m.name;
+  m.time=document.getElementById('em-time').value||m.time;
+  m.kcal=parseInt(document.getElementById('em-kcal').value)||m.kcal;
+  m.p=parseInt(document.getElementById('em-p').value)||0;
+  m.c=parseInt(document.getElementById('em-c').value)||0;
+  m.f=parseInt(document.getElementById('em-f').value)||0;
+  afterLogSave();renderMeals();closeModal('m-meal');
+  toast('Meal updated ✓','ok');
+}
+function deleteMealFromModal(){
+  const lg=DATA.logs[logDate()];if(!lg)return;
+  lg.meals=(lg.meals||[]).filter(function(x){return x.id!==editingMealId;});
+  afterLogSave();renderMeals();closeModal('m-meal');
+  toast('Meal deleted','ok');
+}
+// ─── MODAL HELPERS ────────────────────────────────────────────────────────────
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+// ─── AI (photo reading) ───────────────────────────────────────────────────────
+const AI_MODELS=['claude-sonnet-4-5','claude-sonnet-4-20250514'];
+async function aiVision(prompt,imgB64){
+  const key=getAiKey();
+  if(!key){toast('No AI key — Settings → AI','err');throw new Error('nokey');}
+  let lastErr=null;
+  for(let i=0;i<AI_MODELS.length;i++){
+    try{
+      const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
+        headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify({model:AI_MODELS[i],max_tokens:400,messages:[{role:'user',content:[
+          {type:'image',source:{type:'base64',media_type:'image/jpeg',data:imgB64}},
+          {type:'text',text:prompt}]}]})});
+      if(r.status===404||r.status===400){lastErr=new Error('model');continue;}
+      if(!r.ok)throw new Error('api '+r.status);
+      const j=await r.json();
+      return j.content.map(function(c){return c.text||'';}).join('');
+    }catch(e){lastErr=e;if(String(e.message).indexOf('api')===0)break;}
+  }
+  throw lastErr||new Error('ai failed');
+}
+function extractJson(s){const m=s.match(/\{[\s\S]*\}/);if(!m)throw new Error('nojson');return JSON.parse(m[0]);}
+function compressImage(file){
+  return new Promise(function(res,rej){
+    const img=new Image();
+    img.onload=function(){
+      const max=1280;let w=img.width,h=img.height;
+      if(w>max||h>max){const r=Math.min(max/w,max/h);w=Math.round(w*r);h=Math.round(h*r);}
+      const cv=document.createElement('canvas');cv.width=w;cv.height=h;
+      cv.getContext('2d').drawImage(img,0,0,w,h);
+      res(cv.toDataURL('image/jpeg',0.82).split(',')[1]);
+      URL.revokeObjectURL(img.src);
+    };
+    img.onerror=rej;
+    img.src=URL.createObjectURL(file);
+  });
+}
+async function onFitbitPhoto(input){
+  const f=input.files&&input.files[0];if(!f)return;input.value='';
+  const note=document.getElementById('fb-ai-note');
+  note.style.display='block';note.textContent='Reading your Fitbit screenshot…';
+  try{
+    const b64=await compressImage(f);
+    const txt=await aiVision('This is a screenshot of a Fitbit app screen. Extract what is visible. Reply with ONLY this JSON, using null for anything not shown: {"steps":number|null,"sleepHours":number|null,"restingHR":number|null}. sleepHours as decimal hours (e.g. 7h 24m = 7.4).',b64);
+    const j=extractJson(txt);
+    let got=[];
+    if(j.steps){document.getElementById('fb-steps').value=Math.round(j.steps);got.push(Math.round(j.steps).toLocaleString()+' steps');}
+    if(j.sleepHours){document.getElementById('fb-sleep').value=j.sleepHours;got.push(j.sleepHours+'h sleep');}
+    if(j.restingHR){document.getElementById('fb-hr').value=Math.round(j.restingHR);got.push(Math.round(j.restingHR)+' bpm resting');}
+    note.textContent=got.length?'Read: '+got.join(' · ')+' — check the numbers, then tap Save Fitbit.':'Could not find numbers on that screenshot — type them in manually.';
+  }catch(e){
+    if(e.message!=='nokey')note.textContent='Reading failed — type the numbers in manually.';
+    else note.style.display='none';
+  }
+}
+async function onFoodPhoto(input){
+  const f=input.files&&input.files[0];if(!f)return;input.value='';
+  const note=document.getElementById('food-ai-note');
+  note.style.display='block';note.textContent='Estimating nutrition from the photo…';
+  try{
+    const b64=await compressImage(f);
+    const txt=await aiVision('Estimate the nutrition of the food in this photo (UK portions). Reply with ONLY this JSON: {"name":string,"kcal":number,"protein_g":number,"carbs_g":number,"fat_g":number}. Best single estimate.',b64);
+    const j=extractJson(txt);
+    document.getElementById('cm-name').value=j.name||'Meal from photo';
+    document.getElementById('cm-kcal').value=Math.round(j.kcal)||'';
+    document.getElementById('cm-p').value=Math.round(j.protein_g)||0;
+    document.getElementById('cm-c').value=Math.round(j.carbs_g)||0;
+    document.getElementById('cm-f').value=Math.round(j.fat_g)||0;
+    note.textContent='Estimated — adjust if it looks off, then tap Log Meal.';
+  }catch(e){
+    if(e.message!=='nokey')note.textContent='Estimate failed — enter it manually.';
+    else note.style.display='none';
+  }
+}
+// ─── RENDER LOG ───────────────────────────────────────────────────────────────
+function renderLog(){
+  const de=document.getElementById('log-date');if(!de)return;
+  if(!de.value)de.value=todayISO();
+  const lg=DATA.logs[logDate()]||{};
+  document.getElementById('ql-bed').value=lg.sleepBed||'';
+  document.getElementById('ql-wake').value=lg.sleepWake||'';
+  document.getElementById('ql-dur').textContent=sleepDurText(lg.sleepBed,lg.sleepWake);
+  document.getElementById('ql-meds').className='qtoggle'+(lg.meds?' on':'');
+  document.getElementById('ql-meds').textContent=lg.meds?'Meds ✓':'Meds';
+  for(let i=1;i<=5;i++)document.getElementById('mood-'+i).className='mood-btn'+(lg.mood===i?' sel':'');
+  document.getElementById('fb-steps').value=lg.fitbit&&lg.fitbit.steps?lg.fitbit.steps:'';
+  document.getElementById('fb-sleep').value=lg.fitbit&&lg.fitbit.sleepH?lg.fitbit.sleepH:'';
+  document.getElementById('fb-hr').value=lg.fitbit&&lg.fitbit.rhr?lg.fitbit.rhr:'';
+  document.getElementById('fb-ai-note').style.display='none';
+  document.getElementById('food-ai-note').style.display='none';
+  renderShakeCard();renderMeals();
+}
+
 // ─── BASE64 (unicode-safe) ────────────────────────────────────────────────────
 function b64enc(str){const b=new TextEncoder().encode(str);let s='';for(let i=0;i<b.length;i+=0x8000)s+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));return btoa(s);}
 function b64dec(b64){const bin=atob(b64.replace(/\s/g,''));const a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new TextDecoder().decode(a);}
@@ -587,6 +965,8 @@ function nav(id,btn){
   const nb=btn||document.getElementById('nb-'+id);
   if(nb)nb.classList.add('on');
   document.getElementById('s-'+id).scrollTop=0;
+  if(id==='log')renderLog();
+  if(id==='dash'){renderDash();renderLadder();}
 }
 
 // ─── SETTINGS ─────────────────────────────────────────────────────────────────
