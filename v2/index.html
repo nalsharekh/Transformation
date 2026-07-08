@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Transform">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0a0a">
+<title>Transform</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080808;--s1:#111114;--s2:#18181c;--s3:#222228;--border:#2a2a32;--border2:#333340;
+  --orange:#ff6b2b;--green:#00e5a0;--purple:#a78bfa;--yellow:#fbbf24;--pink:#f472b6;--blue:#38bdf8;--red:#f87171;--amber:#f59e0b;
+  --txt:#f0f0f0;--txt2:#999;--txt3:#555;
+  --f1:'Syne',sans-serif;--f2:'Space Grotesk',sans-serif;
+  --nav:58px;--sb:env(safe-area-inset-bottom,0px);--st:env(safe-area-inset-top,0px)
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+html,body{height:100%;overflow:hidden;background:var(--bg)}
+body{font-family:var(--f2);color:var(--txt);max-width:430px;margin:0 auto;position:relative}
+.screen{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding-top:var(--st);padding-bottom:calc(var(--nav) + var(--sb) + 16px);display:none;-webkit-overflow-scrolling:touch}
+.screen.active{display:block}
+.screen::-webkit-scrollbar{display:none}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:calc(var(--nav) + var(--sb));padding-bottom:var(--sb);background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;align-items:center;z-index:100}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--txt3);cursor:pointer;padding:8px 2px;font-family:var(--f2);position:relative}
+.nav-btn.on{color:var(--green)}
+.nav-btn svg{width:18px;height:18px;stroke-width:1.8}
+.nav-btn .nl{font-size:8px;letter-spacing:.05em;font-weight:500;text-transform:uppercase}
+.nav-badge{position:absolute;top:4px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--red);display:none}
+.nav-badge.show{display:block}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
+.card-lo{border-left:3px solid var(--orange)}.card-lg{border-left:3px solid var(--green)}.card-lp{border-left:3px solid var(--purple)}.card-lb{border-left:3px solid var(--blue)}.card-ly{border-left:3px solid var(--yellow)}.card-lr{border-left:3px solid var(--red)}.card-la{border-left:3px solid var(--amber)}
+.lbl{font-size:9px;letter-spacing:.14em;color:var(--txt3);text-transform:uppercase;font-weight:600;margin-bottom:8px}
+.big{font-family:var(--f1);font-size:28px;font-weight:800;line-height:1}
+.bar-track{background:var(--s3);border-radius:4px;height:5px;overflow:hidden;margin-top:4px}
+.bar-fill{height:100%;border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.btn{padding:10px 14px;border-radius:10px;border:none;font-family:var(--f2);font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.04em;transition:all .15s;display:inline-flex;align-items:center;justify-content:center;gap:5px}
+.btn-g{background:var(--green);color:#000}.btn-o{background:var(--orange);color:#fff}.btn-s{background:var(--s2);color:var(--txt2);border:1px solid var(--border)}.btn-r{background:#2a1515;color:var(--red);border:1px solid #3a2020}.btn-p{background:#1e1a2e;color:var(--purple);border:1px solid #3a2a5a}.btn-a{background:#1e1600;color:var(--amber);border:1px solid #3a2a00}.btn-full{width:100%}
+.btn:active{transform:scale(.97);opacity:.9}
+.btn:disabled{opacity:.4;pointer-events:none}
+.inp{background:var(--s2);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;color:var(--txt);font-family:var(--f2);font-size:13px;width:100%;transition:border .2s}
+.inp:focus{outline:none;border-color:var(--green)}
+.inp::placeholder{color:var(--txt3)}
+select.inp{-webkit-appearance:none}
+.inp-label{font-size:10px;letter-spacing:.1em;color:var(--txt3);margin-bottom:5px;display:block;text-transform:uppercase}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;align-items:flex-end}
+.modal.open{display:flex}
+.msheet{background:#0e0e12;border-radius:20px 20px 0 0;padding:0 16px calc(20px + var(--sb));width:100%;max-height:92vh;overflow-y:auto}
+.msheet::-webkit-scrollbar{display:none}
+.mhandle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:14px auto 16px}
+.ph{padding:14px 16px 0}.ps{padding:0 16px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.stabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:12px}
+.stab{flex:1;padding:9px 4px;text-align:center;background:none;border:none;border-bottom:2px solid transparent;color:var(--txt3);font-size:10px;letter-spacing:.06em;cursor:pointer;font-family:var(--f2);font-weight:500;text-transform:uppercase;transition:all .2s}
+.stab.on{color:var(--green);border-bottom-color:var(--green)}
+.sec-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.sec-act{font-size:11px;color:var(--green);background:none;border:none;cursor:pointer;font-family:var(--f2);font-weight:600}
+.stat{background:var(--s2);border-radius:10px;padding:10px 12px;border:1px solid var(--border)}
+.stat .sv{font-size:18px;font-family:var(--f1);font-weight:700}.stat .sk{font-size:9px;letter-spacing:.1em;color:var(--txt3);margin-top:2px;text-transform:uppercase}
+.frow{margin-bottom:11px}
+.mi-wrap{position:relative}.mi-unit{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:9px;color:var(--txt3);pointer-events:none}
+.badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:9px;letter-spacing:.08em;font-weight:600;text-transform:uppercase}
+.badge-g{background:#00e5a018;color:var(--green);border:1px solid #00e5a030}.badge-o{background:#ff6b2b18;color:var(--orange);border:1px solid #ff6b2b30}.badge-r{background:#f8717118;color:var(--red);border:1px solid #f8717130}.badge-a{background:#f59e0b18;color:var(--amber);border:1px solid #f59e0b30}
+.hdr-gear{background:none;border:1px solid var(--border2);border-radius:8px;padding:6px 8px;color:var(--txt3);cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-size:10px;font-family:var(--f2)}
+.hdr-gear svg{width:14px;height:14px;stroke-width:2}
+/* SYNC STATUS */
+.sync-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:var(--txt3)}
+.sync-dot.ok{background:var(--green)}.sync-dot.err{background:var(--red)}.sync-dot.busy{background:var(--amber);animation:pulseDot 1s infinite}
+@keyframes pulseDot{50%{opacity:.4}}
+.sync-row{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--txt2)}
+/* SETUP CHECKLIST */
+.chk-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--s2);border:1px solid var(--border);border-radius:10px;margin-bottom:7px;cursor:pointer}
+.chk-item.done{border-color:#1a3028;background:#0d1a0d}
+.chk-ico{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;color:var(--txt3)}
+.chk-item.done .chk-ico{background:var(--green);border-color:var(--green);color:#000}
+.chk-txt{font-size:12px;color:var(--txt);font-weight:500;flex:1}
+.chk-item.done .chk-txt{color:var(--txt2);text-decoration:line-through}
+/* STUB */
+.stub{border:1.5px dashed var(--border2);border-radius:14px;padding:22px 16px;text-align:center;margin-bottom:10px}
+.stub .se{font-size:26px;margin-bottom:8px}
+.stub .st1{font-size:13px;font-weight:600;color:var(--txt2)}
+.stub .st2{font-size:11px;color:var(--txt3);margin-top:4px;line-height:1.6}
+/* TOAST */
+#toast{position:fixed;bottom:calc(var(--nav) + var(--sb) + 14px);left:50%;transform:translateX(-50%) translateY(20px);background:#0e0e12;border:1px solid var(--border2);color:var(--txt);padding:10px 18px;border-radius:12px;font-size:12px;font-family:var(--f2);opacity:0;pointer-events:none;transition:all .25s;z-index:300;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.ok{border-color:#1a4a34;color:var(--green)}
+#toast.err{border-color:#4a1a1a;color:var(--red)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .3s ease forwards}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin 1s linear infinite}
+
+/* ─── SAMSUNG Z FOLD — UNFOLDED (≥600px inner screen) ─── */
+@media (min-width:600px){
+  body{max-width:100%;display:block}
+  nav{left:0;bottom:0;top:0;transform:none;width:72px;height:100vh;max-width:72px;flex-direction:column;justify-content:flex-start;padding-top:calc(var(--st) + 20px);padding-bottom:24px;border-right:1px solid var(--border);border-top:none;gap:4px;overflow:hidden}
+  .nav-btn{flex:0 0 auto;flex-direction:column;padding:12px 8px;gap:5px;border-radius:12px;margin:0 4px;width:calc(100% - 8px)}
+  .nav-btn.on{background:var(--s2)}
+  .nav-btn svg{width:20px;height:20px}
+  .nav-btn .nl{font-size:8px;letter-spacing:.04em}
+  .nav-badge{top:6px;right:6px}
+  .screen{left:72px;right:0;width:calc(100% - 72px);padding-top:calc(var(--st) + 8px);padding-bottom:24px}
+  .ph{padding:14px 20px 0}
+  .ps{padding:0 20px}
+  .modal{align-items:center;justify-content:center;padding:24px}
+  .msheet{border-radius:20px;max-width:520px;max-height:88vh;width:100%;margin:0 auto}
+  .stab{font-size:11px;padding:10px 8px}
+  .card{border-radius:16px;padding:16px}
+  .big{font-size:34px}
+  #dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  #settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  #toast{left:calc(50% + 36px)}
+}
+nav,body,.screen{transition:none}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div class="screen active" id="s-dash">
+  <div class="ph">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:1px solid var(--border)">
+      <div>
+        <div style="font-size:9px;letter-spacing:.14em;color:var(--txt3);text-transform:uppercase" id="d-datestr"></div>
+        <div class="big" style="margin-top:2px">Transform</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+        <button class="hdr-gear" onclick="nav('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings</button>
+        <div class="sync-row"><div class="sync-dot" id="sync-dot-home"></div><span id="sync-lbl-home">Local only</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="ps" style="margin-top:10px">
+    <div id="dash-grid">
+      <div>
+        <div class="card card-lg" id="setup-card">
+          <div class="lbl" style="color:var(--green)">▸ GET SET UP</div>
+          <div style="font-size:11px;color:var(--txt3);margin-bottom:10px;line-height:1.6">Fresh start. Three quick steps and the app is yours.</div>
+          <div id="setup-list"></div>
+        </div>
+        <div class="stub"><div class="se">🎯</div><div class="st1">Dashboard is next</div><div class="st2">Weight ring with projected date +<br>the Sport-Ready ladder land here<br>in the next update.</div></div>
+      </div>
+      <div>
+        <div class="stub"><div class="se">🏗️</div><div class="st1">v2 rebuild in progress</div><div class="st2">Shell, settings and cloud sync are live.<br>Screens arrive one at a time.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOG -->
+<div class="screen" id="s-log">
+  <div class="ph"><div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:1px solid var(--border)"><div><div style="font-size:9px;letter-spacing:.14em;color:var(--txt3);text-transform:uppercase">Daily Entry</div><div class="big" style="margin-top:2px">Log</div></div><button class="hdr-gear" onclick="nav('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button></div></div>
+  <div class="ps" style="margin-top:10px"><div class="stub"><div class="se">⚡</div><div class="st1">Coming up</div><div class="st2">20-second quick-log: sleep, Meds, mood —<br>plus the Fitbit screenshot reader.</div></div></div>
+</div>
+
+<!-- MOVE -->
+<div class="screen" id="s-move">
+  <div class="ph"><div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:1px solid var(--border)"><div><div style="font-size:9px;letter-spacing:.14em;color:var(--txt3);text-transform:uppercase">Hypermobility-Safe</div><div class="big" style="margin-top:2px">Move</div></div><button class="hdr-gear" onclick="nav('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button></div></div>
+  <div class="ps" style="margin-top:10px"><div class="stub"><div class="se">🏋️</div><div class="st1">Coming up</div><div class="st2">Stability-first exercise engine with smart swaps.<br>Cardio: walking, swimming, steps. Nothing else.</div></div></div>
+</div>
+
+<!-- FOOD -->
+<div class="screen" id="s-food">
+  <div class="ph"><div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:1px solid var(--border)"><div><div style="font-size:9px;letter-spacing:.14em;color:var(--txt3);text-transform:uppercase">Recipes → Groceries</div><div class="big" style="margin-top:2px">Food</div></div><button class="hdr-gear" onclick="nav('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button></div></div>
+  <div class="ps" style="margin-top:10px"><div class="stub"><div class="se">🧾</div><div class="st1">Coming up</div><div class="st2">Paste this week's recipes → ingredients extracted →<br>3-day grocery list minus pantry, by store section.</div></div></div>
+</div>
+
+<!-- FAST -->
+<div class="screen" id="s-fast">
+  <div class="ph"><div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:1px solid var(--border)"><div><div style="font-size:9px;letter-spacing:.14em;color:var(--txt3);text-transform:uppercase">Intermittent Fasting</div><div class="big" style="margin-top:2px">Fast</div></div><button class="hdr-gear" onclick="nav('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button></div></div>
+  <div class="ps" style="margin-top:10px"><div class="stub"><div class="se">⏱️</div><div class="st1">Coming up</div><div class="st2">Your fasting clock moves over from v1<br>exactly as it is.</div></div></div>
+</div>
+
+<!-- HEALTH -->
+<div class="screen" id="s-health">
+  <div class="ph"><div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:1px solid var(--border)"><div><div style="font-size:9px;letter-spacing:.14em;color:var(--txt3);text-transform:uppercase">Journal · Bloods · Checkups</div><div class="big" style="margin-top:2px">Health</div></div><button class="hdr-gear" onclick="nav('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button></div></div>
+  <div class="ps" style="margin-top:10px"><div class="stub"><div class="se">🩺</div><div class="st1">Coming up</div><div class="st2">Journal and blood tests stay,<br>plus the new Checkup radar with due reminders.</div></div></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="screen" id="s-settings">
+  <div class="ph"><div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:1px solid var(--border)"><div><div style="font-size:9px;letter-spacing:.14em;color:var(--txt3);text-transform:uppercase">Private · Device Only</div><div class="big" style="margin-top:2px">Settings</div></div><div class="sync-row" style="margin-top:6px"><div class="sync-dot" id="sync-dot-set"></div><span id="sync-lbl-set">Local only</span></div></div></div>
+  <div class="ps" style="margin-top:10px">
+    <div id="settings-grid">
+    <div>
+    <div class="card card-lg">
+      <div class="lbl" style="color:var(--green)">▸ CLOUD SYNC — PRIVATE GITHUB</div>
+      <div style="font-size:11px;color:var(--txt3);line-height:1.7;margin-bottom:10px">Your data lives in your private <b style="color:var(--txt2)">transformation-data</b> repo. Paste a fine-grained token that can read and write <b style="color:var(--txt2)">only that repo</b> (Contents: read and write). The token never leaves this device.</div>
+      <div class="frow"><label class="inp-label">GitHub token</label><input class="inp" id="set-ghtoken" type="password" placeholder="github_pat_…" autocomplete="off"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-g" style="flex:1" onclick="saveGhToken()">Save token</button>
+        <button class="btn btn-s" onclick="syncNow(true)">↻ Sync now</button>
+      </div>
+      <div id="sync-detail" style="font-size:10px;color:var(--txt3);margin-top:8px;line-height:1.6"></div>
+    </div>
+    <div class="card card-lb">
+      <div class="lbl" style="color:var(--blue)">▸ AI — PHOTO READING & SWAPS</div>
+      <div style="font-size:11px;color:var(--txt3);line-height:1.7;margin-bottom:10px">Used only to read photos (Fitbit screen, food, blood tests) and suggest exercise swaps. Stored only on this device.</div>
+      <div class="frow"><label class="inp-label">Anthropic API key</label><input class="inp" id="set-aikey" type="password" placeholder="sk-ant-…" autocomplete="off"></div>
+      <button class="btn btn-g btn-full" onclick="saveAiKey()">Save key</button>
+    </div>
+    <div class="card card-lp">
+      <div class="lbl" style="color:var(--purple)">▸ TARGETS</div>
+      <div class="g2" style="margin-bottom:11px">
+        <div><label class="inp-label">Target weight</label><div class="mi-wrap"><input class="inp" id="set-target" type="number" step=".5"><span class="mi-unit">kg</span></div></div>
+        <div><label class="inp-label">Sessions / week</label><input class="inp" id="set-sessions" type="number" min="1" max="7"></div>
+      </div>
+      <div class="frow"><label class="inp-label">Daily steps target</label><div class="mi-wrap"><input class="inp" id="set-steps" type="number" step="500"><span class="mi-unit">steps</span></div><div style="font-size:10px;color:var(--txt3);margin-top:5px">We'll set this properly from your real Fitbit average once a few days are logged.</div></div>
+      <button class="btn btn-g btn-full" onclick="saveTargets()">Save targets</button>
+    </div>
+    </div>
+    <div>
+    <div class="card card-ly">
+      <div class="lbl" style="color:var(--yellow)">▸ BACKUP</div>
+      <div style="font-size:11px;color:var(--txt3);line-height:1.7;margin-bottom:10px">Everything except your tokens. Keep a copy somewhere safe now and then.</div>
+      <button class="btn btn-s btn-full" style="margin-bottom:8px" onclick="exportData()">⬇ Export backup file</button>
+      <input type="file" accept=".json,application/json" id="import-file" style="display:none" onchange="importData(this)">
+      <button class="btn btn-s btn-full" onclick="document.getElementById('import-file').click()">⬆ Import backup file</button>
+    </div>
+    <div class="card card-lr">
+      <div class="lbl" style="color:var(--red)">▸ DANGER ZONE</div>
+      <div style="font-size:11px;color:var(--txt3);line-height:1.7;margin-bottom:10px">Wipes everything on this device: data, tokens, keys. The cloud copy in your private repo is not touched.</div>
+      <button class="btn btn-r btn-full" onclick="wipeLocal()">Erase local data</button>
+    </div>
+    <div class="card">
+      <div class="lbl">▸ ABOUT</div>
+      <div style="font-size:11px;color:var(--txt3);line-height:1.8">Transform <span id="about-ver" style="color:var(--txt2)"></span><br>Personal build · no analytics · no third parties.<br>Weekly deep review happens with Claude, not in the page.</div>
+    </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<nav>
+  <button class="nav-btn on" onclick="nav('dash',this)" id="nb-dash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="nl">Home</span><div class="nav-badge" id="badge-dash"></div></button>
+  <button class="nav-btn" onclick="nav('log',this)" id="nb-log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg><span class="nl">Log</span></button>
+  <button class="nav-btn" onclick="nav('move',this)" id="nb-move"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="5" r="2.2"/><path d="M9 20l2-5.5L9 11l3-3 2 3h3"/><path d="M6 20l2.5-6"/></svg><span class="nl">Move</span></button>
+  <button class="nav-btn" onclick="nav('food',this)" id="nb-food"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg><span class="nl">Food</span><div class="nav-badge" id="badge-food"></div></button>
+  <button class="nav-btn" onclick="nav('fast',this)" id="nb-fast"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span class="nl">Fast</span></button>
+  <button class="nav-btn" onclick="nav('health',this)" id="nb-health"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg><span class="nl">Health</span><div class="nav-badge" id="badge-health"></div></button>
+</nav>
+
+<div id="toast"></div>
+
+<script>
+'use strict';
+// ═══ TRANSFORM v2 — no personal data lives in this file. All data: private repo + this device. ═══
+const V2_VERSION='2.0.1';
+
+// ─── STORAGE (single doc) ─────────────────────────────────────────────────────
+const LS={
+  g:k=>{try{const v=localStorage.getItem('tfm5_'+k);return v?JSON.parse(v):null}catch{return null}},
+  s:(k,v)=>{try{localStorage.setItem('tfm5_'+k,JSON.stringify(v))}catch{}},
+  d:k=>{try{localStorage.removeItem('tfm5_'+k)}catch{}}
+};
+function defaultData(){
+  return {
+    schema:2,
+    settings:{targetWeight:85,sessionsPerWeek:3,stepsTarget:8000,ifEatStart:'12:00',ifEatEnd:'20:00',store:'Waitrose'},
+    logs:{},            // logs[YYYY-MM-DD] = {weight,sleepBed,sleepWake,meds,mood,fitbit:{steps,sleepH,rhr},meals:[],ex:[],declines:[]}
+    weightLog:[],       // [{date,kg}]
+    fasting:{current:null,sessions:[]},
+    ladder:{stage:0,progress:0,lastEval:null,history:[]},
+    recipes:[],
+    pantry:[],
+    grocery:{items:[],generatedAt:null,store:null},
+    journal:[],
+    bloods:[],
+    checkups:[],
+    meta:{updatedAt:new Date(0).toISOString(),device:null,createdAt:new Date().toISOString()}
+  };
+}
+let DATA=LS.g('data')||defaultData();
+(function(){const d=defaultData();for(const k in d){if(DATA[k]===undefined)DATA[k]=d[k];}})();
+
+function persistLocal(){LS.s('data',DATA);}
+function save(bump){
+  if(bump!==false)DATA.meta.updatedAt=new Date().toISOString();
+  persistLocal();
+  scheduleSync();
+  renderSetup();
+}
+function getGhToken(){return localStorage.getItem('tfm5_ghtoken')||'';}
+function getAiKey(){return localStorage.getItem('tfm5_aikey')||'';}
+
+// ─── DATE UTILS ───────────────────────────────────────────────────────────────
+function todayISO(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function fmtDateHdr(d){return d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});}
+
+// ─── BASE64 (unicode-safe) ────────────────────────────────────────────────────
+function b64enc(str){const b=new TextEncoder().encode(str);let s='';for(let i=0;i<b.length;i+=0x8000)s+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));return btoa(s);}
+function b64dec(b64){const bin=atob(b64.replace(/\s/g,''));const a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);return new TextDecoder().decode(a);}
+
+// ─── CLOUD SYNC (private GitHub repo) ────────────────────────────────────────
+const SYNC_URL='https://api.github.com/repos/nalsharekh/transformation-data/contents/data.json';
+let syncTimer=null,syncBusy=false,remoteSha=LS.g('sha')||null;
+function scheduleSync(){clearTimeout(syncTimer);syncTimer=setTimeout(function(){syncNow(false);},2500);}
+function setSyncUI(cls,label,detail){
+  ['home','set'].forEach(function(x){
+    const d=document.getElementById('sync-dot-'+x),l=document.getElementById('sync-lbl-'+x);
+    if(d)d.className='sync-dot'+(cls?' '+cls:'');
+    if(l)l.textContent=label;
+  });
+  const sd=document.getElementById('sync-detail');
+  if(sd&&detail!==undefined)sd.textContent=detail;
+}
+function ghHeaders(){return{'Authorization':'Bearer '+getGhToken(),'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};}
+async function ghGet(){
+  const r=await fetch(SYNC_URL+'?t='+Date.now(),{headers:ghHeaders(),cache:'no-store'});
+  if(r.status===404)return{missing:true};
+  if(!r.ok)throw new Error('GET '+r.status);
+  const j=await r.json();remoteSha=j.sha;LS.s('sha',remoteSha);
+  let doc=null;try{doc=JSON.parse(b64dec(j.content));}catch(e){doc=null;}
+  return{doc:doc,sha:j.sha};
+}
+async function ghPut(){
+  const wrapper={schema:2,note:'Transform v2 data. Managed by the Transform app.',data:DATA};
+  const body={message:'sync '+new Date().toISOString(),content:b64enc(JSON.stringify(wrapper))};
+  if(remoteSha)body.sha=remoteSha;
+  const r=await fetch(SYNC_URL,{method:'PUT',headers:ghHeaders(),body:JSON.stringify(body)});
+  if(r.status===409||r.status===422){
+    const g=await ghGet();
+    if(g.doc&&g.doc.data&&g.doc.data.meta&&g.doc.data.meta.updatedAt>DATA.meta.updatedAt){
+      DATA=g.doc.data;persistLocal();renderAll();return'pulled';
+    }
+    body.sha=remoteSha;
+    const r2=await fetch(SYNC_URL,{method:'PUT',headers:ghHeaders(),body:JSON.stringify(body)});
+    if(!r2.ok)throw new Error('PUT retry '+r2.status);
+    const j2=await r2.json();remoteSha=j2.content.sha;LS.s('sha',remoteSha);return'pushed';
+  }
+  if(!r.ok)throw new Error('PUT '+r.status);
+  const j=await r.json();remoteSha=j.content.sha;LS.s('sha',remoteSha);return'pushed';
+}
+async function syncNow(manual){
+  if(!getGhToken()){setSyncUI('','Local only','No sync token yet — data stays on this device until you paste one.');return;}
+  if(syncBusy)return;syncBusy=true;
+  setSyncUI('busy','Syncing…');
+  try{
+    const g=await ghGet();
+    if(!g.missing&&g.doc&&g.doc.data&&g.doc.data.meta&&g.doc.data.meta.updatedAt>DATA.meta.updatedAt){
+      DATA=g.doc.data;persistLocal();renderAll();
+      setSyncUI('ok','Synced '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),'Pulled newer data from cloud.');
+      if(manual)toast('Pulled latest from cloud ✓','ok');
+    }else{
+      await ghPut();
+      setSyncUI('ok','Synced '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),'Cloud copy is up to date.');
+      if(manual)toast('Synced ✓','ok');
+    }
+  }catch(e){
+    setSyncUI('err','Sync error','Could not reach your private repo. Check the token has Contents read & write on transformation-data, and that it has not expired.');
+    if(manual)toast('Sync failed — check token','err');
+  }
+  syncBusy=false;
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+let toastTimer=null;
+function toast(msg,cls){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className=cls||'';
+  requestAnimationFrame(function(){t.classList.add('show');});
+  clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('show');},2200);
+}
+
+// ─── NAV ──────────────────────────────────────────────────────────────────────
+function nav(id,btn){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('s-'+id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('on');});
+  const nb=btn||document.getElementById('nb-'+id);
+  if(nb)nb.classList.add('on');
+  document.getElementById('s-'+id).scrollTop=0;
+}
+
+// ─── SETTINGS ─────────────────────────────────────────────────────────────────
+function saveGhToken(){
+  const v=document.getElementById('set-ghtoken').value.trim();
+  if(!v){toast('Paste a token first','err');return;}
+  localStorage.setItem('tfm5_ghtoken',v);
+  document.getElementById('set-ghtoken').value='';
+  document.getElementById('set-ghtoken').placeholder='Saved ✓ (hidden)';
+  toast('Token saved — syncing…','ok');
+  syncNow(true);renderSetup();
+}
+function saveAiKey(){
+  const v=document.getElementById('set-aikey').value.trim();
+  if(!v){toast('Paste a key first','err');return;}
+  localStorage.setItem('tfm5_aikey',v);
+  document.getElementById('set-aikey').value='';
+  document.getElementById('set-aikey').placeholder='Saved ✓ (hidden)';
+  toast('AI key saved ✓','ok');renderSetup();
+}
+function saveTargets(){
+  const t=parseFloat(document.getElementById('set-target').value);
+  const s=parseInt(document.getElementById('set-sessions').value);
+  const st=parseInt(document.getElementById('set-steps').value);
+  if(t&&t>40&&t<200)DATA.settings.targetWeight=t;
+  if(s&&s>=1&&s<=7)DATA.settings.sessionsPerWeek=s;
+  if(st&&st>=1000)DATA.settings.stepsTarget=st;
+  save();toast('Targets saved ✓','ok');renderSettings();
+}
+function renderSettings(){
+  document.getElementById('set-target').value=DATA.settings.targetWeight;
+  document.getElementById('set-sessions').value=DATA.settings.sessionsPerWeek;
+  document.getElementById('set-steps').value=DATA.settings.stepsTarget;
+  if(getGhToken())document.getElementById('set-ghtoken').placeholder='Saved ✓ (paste to replace)';
+  if(getAiKey())document.getElementById('set-aikey').placeholder='Saved ✓ (paste to replace)';
+  document.getElementById('about-ver').textContent='v'+V2_VERSION;
+}
+
+// ─── BACKUP ───────────────────────────────────────────────────────────────────
+function exportData(){
+  const out={app:'Transform',version:V2_VERSION,exportedAt:new Date().toISOString(),data:DATA};
+  const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='transform-backup-'+todayISO()+'.json';
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},4000);
+  toast('Backup downloaded ✓','ok');
+}
+function importData(input){
+  const f=input.files&&input.files[0];if(!f)return;
+  const rd=new FileReader();
+  rd.onload=function(){
+    try{
+      const j=JSON.parse(rd.result);
+      const doc=(j.data&&j.data.settings)?j.data:(j.settings?j:null);
+      if(!doc||!doc.settings||!doc.logs)throw new Error('bad');
+      const when=j.exportedAt?new Date(j.exportedAt).toLocaleString('en-GB'):'unknown date';
+      if(!confirm('Replace ALL data on this device with the backup from '+when+'?'))return;
+      DATA=doc;DATA.meta.updatedAt=new Date().toISOString();
+      persistLocal();renderAll();save();
+      toast('Backup restored ✓','ok');
+    }catch(e){toast('Not a valid Transform backup file','err');}
+    input.value='';
+  };
+  rd.readAsText(f);
+}
+function wipeLocal(){
+  if(!confirm('Erase ALL Transform data, tokens and keys from this device?'))return;
+  if(!confirm('Really sure? The cloud copy stays, but this device starts blank.'))return;
+  Object.keys(localStorage).filter(function(k){return k.indexOf('tfm5_')===0;}).forEach(function(k){localStorage.removeItem(k);});
+  location.reload();
+}
+
+// ─── SETUP CHECKLIST (home) ───────────────────────────────────────────────────
+function renderSetup(){
+  const el=document.getElementById('setup-list');if(!el)return;
+  const items=[
+    {done:!!getGhToken(),txt:'Paste your sync token',sub:'Settings → Cloud Sync'},
+    {done:!!getAiKey(),txt:'Paste your Anthropic key',sub:'Settings → AI'},
+    {done:(DATA.weightLog||[]).length>0,txt:'Log your first weigh-in',sub:'Arrives with the Log screen'}
+  ];
+  el.innerHTML=items.map(function(i){return '<div class="chk-item'+(i.done?' done':'')+'" onclick="nav(\'settings\')"><div class="chk-ico">'+(i.done?'✓':'')+'</div><div class="chk-txt">'+i.txt+'</div><div style="font-size:9px;color:var(--txt3)">'+i.sub+'</div></div>';}).join('');
+  const allDone=items.every(function(i){return i.done;});
+  const card=document.getElementById('setup-card');
+  if(card)card.style.display=allDone?'none':'block';
+}
+
+// ─── RENDER ALL ───────────────────────────────────────────────────────────────
+function renderAll(){
+  document.getElementById('d-datestr').textContent=fmtDateHdr(new Date());
+  renderSettings();renderSetup();
+}
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+renderAll();
+persistLocal();
+if(getGhToken())syncNow(false);
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&getGhToken())syncNow(false);});
+console.log('Transform v'+V2_VERSION);
+</script>
+</body>
+</html>
