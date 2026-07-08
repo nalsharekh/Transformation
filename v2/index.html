@@ -83,6 +83,13 @@ select.inp{-webkit-appearance:none}
 .stub .se{font-size:26px;margin-bottom:8px}
 .stub .st1{font-size:13px;font-weight:600;color:var(--txt2)}
 .stub .st2{font-size:11px;color:var(--txt3);margin-top:4px;line-height:1.6}
+/* IF CLOCK (ported from v1 as is) */
+.if-wrap{display:flex;flex-direction:column;align-items:center;padding:16px 0}
+.if-ring{position:relative;width:180px;height:180px}
+.if-ring svg{position:absolute;inset:0}
+.if-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.if-time{font-family:var(--f1);font-size:24px;font-weight:800;line-height:1}
+.if-status{font-size:9px;letter-spacing:.12em;color:var(--txt3);margin-top:4px;text-transform:uppercase}
 /* WEIGHT RING + LADDER */
 .prog-card{background:linear-gradient(135deg,#120f1a,#0c0a12);border:1px solid #251f38;border-radius:14px;padding:14px;margin-bottom:10px}
 .wr-stat{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0}
@@ -191,6 +198,11 @@ select.inp{-webkit-appearance:none}
   .big{font-size:34px}
   #dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
   #settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  #s-fast .ps{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  #s-fast .ps>*{min-width:0}
+  .if-wrap{padding:20px 0}
+  .if-ring{width:200px;height:200px}
+  .if-time{font-size:28px}
   #toast{left:calc(50% + 36px)}
 }
 nav,body,.screen{transition:none}
@@ -444,8 +456,14 @@ nav,body,.screen{transition:none}
 <!-- FAST -->
 <div class="screen" id="s-fast">
   <div class="ph"><div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:1px solid var(--border)"><div><div style="font-size:9px;letter-spacing:.14em;color:var(--txt3);text-transform:uppercase">Intermittent Fasting</div><div class="big" style="margin-top:2px">Fast</div></div><button class="hdr-gear" onclick="nav('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button></div></div>
-  <div class="ps" style="margin-top:10px"><div class="stub"><div class="se">⏱️</div><div class="st1">Coming up</div><div class="st2">Your fasting clock moves over from v1<br>exactly as it is.</div></div></div>
+  <div class="ps" style="margin-top:10px">
+    <div class="card" style="margin-bottom:10px"><div class="lbl">▸ WINDOW</div><div class="g3" style="margin-bottom:12px"><button class="btn btn-s" onclick="setWindow(16,8)">16:8</button><button class="btn btn-s" onclick="setWindow(18,6)">18:6</button><button class="btn btn-s" onclick="setWindow(20,4)">20:4</button></div><div class="g2"><div><label class="inp-label">Eating From</label><input class="inp" type="time" id="if-start" value="12:00" onchange="saveIfSettings()"></div><div><label class="inp-label">Until</label><input class="inp" type="time" id="if-end" value="20:00" onchange="saveIfSettings()"></div></div></div>
+    <div class="if-wrap"><div class="if-ring"><svg width="180" height="180" viewBox="0 0 180 180"><circle cx="90" cy="90" r="78" fill="none" stroke="var(--s3)" stroke-width="10"/><circle cx="90" cy="90" r="78" fill="none" stroke="var(--green)" stroke-width="10" stroke-dasharray="490.1" stroke-dashoffset="490.1" id="if-arc" style="transform-origin:90px 90px;transform:rotate(-90deg);transition:stroke-dashoffset .5s;stroke-linecap:round"/></svg><div class="if-center"><div class="if-time" id="if-display">--:--</div><div class="if-status" id="if-label">Loading</div><div style="font-size:10px;color:var(--txt3);margin-top:5px" id="if-sub"></div></div></div><div style="display:flex;gap:10px;margin-top:10px"><button class="btn btn-g" id="if-btn" onclick="toggleFast()" style="flex:1">Start Fast</button><button class="btn btn-r" onclick="resetFast()">Reset</button></div></div>
+    <div class="card card-lg"><div class="lbl">▸ WINDOW INFO</div><div id="if-window-info"></div></div>
+    <div class="card"><div class="lbl">▸ FASTING LOG</div><div id="if-history"></div></div>
+  </div>
 </div>
+
 
 <!-- HEALTH -->
 <div class="screen" id="s-health">
@@ -562,7 +580,7 @@ nav,body,.screen{transition:none}
 <script>
 'use strict';
 // ═══ TRANSFORM v2 — no personal data lives in this file. All data: private repo + this device. ═══
-const V2_VERSION='2.4.2';
+const V2_VERSION='2.5.0';
 
 // ─── STORAGE (single doc) ─────────────────────────────────────────────────────
 const LS={
@@ -1501,6 +1519,43 @@ function renderFood(){
   document.getElementById('gr-done-wrap').style.display=items.some(function(i){return i.checked;})?'block':'none';
 }
 
+// ─── FASTING (ported from v1 as is; storage adapted) ─────────────────────────
+function parseTime(t){if(!t)return 0;const p=t.split(':');return(+p[0])*60+(+p[1]);}
+function fmtTime(t){if(!t)return'';const p=t.split(':');const hh=parseInt(p[0]);return(hh%12||12)+':'+p[1]+(hh>=12?'PM':'AM');}
+function setWindow(fast,eat){document.getElementById('if-start').value=String(12).padStart(2,'0')+':00';document.getElementById('if-end').value=String(12+eat).padStart(2,'0')+':00';saveIfSettings();}
+function saveIfSettings(){DATA.settings.ifEatStart=document.getElementById('if-start').value;DATA.settings.ifEatEnd=document.getElementById('if-end').value;save();updateIfDisplay();}
+function toggleFast(){const f=DATA.fasting;if(f.current){f.sessions.push({start:f.current.start,end:new Date().toISOString()});f.current=null;}else f.current={start:new Date().toISOString()};save();updateIfDisplay();}
+function resetFast(){if(!confirm('Reset?'))return;DATA.fasting.current=null;save();updateIfDisplay();}
+function updateIfDisplay(){
+  const f=DATA.fasting;const s=DATA.settings;const now=new Date();
+  const arc=document.getElementById('if-arc');if(!arc)return;
+  const eatStart=parseTime(s.ifEatStart||'12:00');const eatEnd=parseTime(s.ifEatEnd||'20:00');
+  const fastH=24-(eatEnd-eatStart)/60;const nowMins=now.getHours()*60+now.getMinutes();
+  const inEating=nowMins>=eatStart&&nowMins<eatEnd;
+  const display=document.getElementById('if-display');const label=document.getElementById('if-label');const sub=document.getElementById('if-sub');
+  if(f.current){
+    const elapsed=(now-new Date(f.current.start))/60000;const h=Math.floor(elapsed/60),m=Math.floor(elapsed%60);
+    display.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');label.textContent='FASTING';label.style.color='var(--orange)';
+    arc.style.stroke='var(--orange)';arc.style.strokeDashoffset=490.1*(1-Math.min(elapsed/(fastH*60),1));
+    sub.textContent=Math.round((elapsed/(fastH*60))*100)+'% of '+Math.round(fastH)+'h';
+    document.getElementById('if-btn').textContent='Stop Fast';document.getElementById('if-btn').className='btn btn-r';
+  }else{
+    let diff;
+    if(inEating){diff=eatEnd-nowMins;label.textContent='EATING WINDOW';label.style.color='var(--green)';sub.textContent='Closes at '+fmtTime(s.ifEatEnd);arc.style.stroke='var(--green)';arc.style.strokeDashoffset=490.1*(1-(nowMins-eatStart)/(eatEnd-eatStart));}
+    else{diff=eatStart>nowMins?eatStart-nowMins:eatStart+1440-nowMins;label.textContent='UNTIL EATING';label.style.color='var(--txt3)';sub.textContent='Opens at '+fmtTime(s.ifEatStart);arc.style.stroke='var(--s3)';arc.style.strokeDashoffset=100;}
+    const h=Math.floor(diff/60),m=diff%60;display.textContent=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+    document.getElementById('if-btn').textContent='Start Fast';document.getElementById('if-btn').className='btn btn-g';
+  }
+  document.getElementById('if-window-info').innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><div><div style="font-size:9px;color:var(--txt3)">Eating window</div><div style="font-size:15px;font-family:var(--f1);font-weight:700">'+fmtTime(s.ifEatStart||'12:00')+' – '+fmtTime(s.ifEatEnd||'20:00')+'</div></div><div style="text-align:right"><div style="font-size:9px;color:var(--txt3)">Fast</div><div style="font-size:15px;font-family:var(--f1);font-weight:700;color:var(--orange)">'+Math.round(fastH)+'h</div></div></div><div style="margin-top:10px;padding:8px 10px;border-radius:8px;background:'+(inEating?'#0d1a0d':'#1a0d0d')+';font-size:12px;color:'+(inEating?'var(--green)':'var(--red)')+';">'+(inEating?'✓ In eating window':'✗ Window closed')+'</div>';
+  const sessions=f.sessions.slice(-5).reverse();
+  document.getElementById('if-history').innerHTML=sessions.length?sessions.map(function(x){const st=new Date(x.start);const en=new Date(x.end);const dur=(en-st)/3.6e6;return'<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><div style="font-size:12px">'+st.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+'</div><div style="font-size:13px;color:var(--orange);font-family:var(--f1);font-weight:700">'+dur.toFixed(1)+'h</div></div>';}).join(''):'<div style="font-size:12px;color:var(--txt3);padding:8px 0">No sessions yet.</div>';
+}
+function renderFast(){
+  document.getElementById('if-start').value=DATA.settings.ifEatStart||'12:00';
+  document.getElementById('if-end').value=DATA.settings.ifEatEnd||'20:00';
+  updateIfDisplay();
+}
+
 // ─── RENDER LOG ───────────────────────────────────────────────────────────────
 function renderLog(){
   const de=document.getElementById('log-date');if(!de)return;
@@ -1606,6 +1661,7 @@ function nav(id,btn){
   if(id==='log')renderLog();
   if(id==='move')renderMove();
   if(id==='food')renderFood();
+  if(id==='fast')renderFast();
   if(id==='dash'){renderDash();renderLadder();}
 }
 
@@ -1707,6 +1763,9 @@ renderAll();
 persistLocal();
 if(getGhToken())syncNow(false);
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&getGhToken())syncNow(false);});
+setInterval(function(){
+  if(document.getElementById('s-fast').classList.contains('active'))updateIfDisplay();
+},30000);
 console.log('Transform v'+V2_VERSION); // build 2.1.0
 </script>
 </body>
