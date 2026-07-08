@@ -136,6 +136,31 @@ select.inp{-webkit-appearance:none}
 .why-btn:active{border-color:var(--green)}
 .wk-dot{width:22px;height:22px;border-radius:50%;background:var(--s3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--txt3)}
 .wk-dot.hit{background:var(--green);border-color:var(--green);color:#000;font-weight:800}
+/* FOOD SCREEN */
+.recipe-item{background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:10px 12px;margin-bottom:7px}
+.recipe-item summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.recipe-item summary::-webkit-details-marker{display:none}
+.rc-name{font-size:12px;font-weight:600;color:var(--txt);flex:1;line-height:1.3}
+.rc-meta{font-size:9px;color:var(--txt3);margin-top:2px}
+.rc-times{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.rc-tbtn{width:24px;height:24px;border-radius:7px;border:1px solid var(--border2);background:var(--s3);color:var(--txt2);font-size:13px;cursor:pointer;line-height:1}
+.rc-tval{font-size:12px;font-family:var(--f1);font-weight:800;color:var(--green);min-width:22px;text-align:center}
+.rc-ing{font-size:10px;color:var(--txt3);padding:8px 0 2px;line-height:1.7;border-top:1px solid var(--border);margin-top:8px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;background:var(--s2);border:1px solid var(--border);border-radius:20px;font-size:11px;color:var(--txt2);margin:0 5px 6px 0}
+.chip button{background:none;border:none;color:var(--txt3);cursor:pointer;font-size:12px;padding:0}
+.gi-sec{display:flex;align-items:center;gap:7px;margin:12px 0 7px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3);font-weight:600}
+.gi-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.gi-row{display:flex;align-items:center;gap:10px;padding:9px 11px;background:var(--s2);border:1px solid var(--border);border-radius:10px;margin-bottom:5px;cursor:pointer;transition:all .15s}
+.gi-row.checked{background:#0d1a0d;border-color:#1a3028;opacity:.75}
+.gi-row.covered{opacity:.5;border-style:dashed;cursor:default}
+.gi-box{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:12px;color:#000;flex-shrink:0}
+.gi-row.checked .gi-box{background:var(--green);border-color:var(--green)}
+.gi-name{font-size:12px;color:var(--txt);font-weight:500;flex:1;line-height:1.3}
+.gi-row.checked .gi-name{text-decoration:line-through;color:var(--txt2)}
+.gi-qty{font-size:10px;color:var(--txt3);flex-shrink:0}
+@media (min-width:600px){
+  #food-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+}
 
 /* TOAST */
 #toast{position:fixed;bottom:calc(var(--nav) + var(--sb) + 14px);left:50%;transform:translateX(-50%) translateY(20px);background:#0e0e12;border:1px solid var(--border2);color:var(--txt);padding:10px 18px;border-radius:12px;font-size:12px;font-family:var(--f2);opacity:0;pointer-events:none;transition:all .25s;z-index:300;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis}
@@ -241,7 +266,7 @@ nav,body,.screen{transition:none}
           <div style="font-size:11px;color:var(--txt3);margin-bottom:10px;line-height:1.6">Fresh start. Three quick steps and the app is yours.</div>
           <div id="setup-list"></div>
         </div>
-        <div class="stub"><div class="se">🧾</div><div class="st1">Next update: the Food screen</div><div class="st2">Recipes in → one bulk grocery list out,<br>by store section, minus your pantry.</div></div>
+        <div class="stub"><div class="se">⏱️</div><div class="st1">Next updates: Fast + Health</div><div class="st2">Fasting clock ports over from v1,<br>then the Checkup radar closes it out.</div></div>
       </div>
     </div>
   </div>
@@ -362,8 +387,45 @@ nav,body,.screen{transition:none}
 <!-- FOOD -->
 <div class="screen" id="s-food">
   <div class="ph"><div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:1px solid var(--border)"><div><div style="font-size:9px;letter-spacing:.14em;color:var(--txt3);text-transform:uppercase">Recipes → Groceries</div><div class="big" style="margin-top:2px">Food</div></div><button class="hdr-gear" onclick="nav('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button></div></div>
-  <div class="ps" style="margin-top:10px"><div class="stub"><div class="se">🧾</div><div class="st1">Coming up</div><div class="st2">Paste this week's recipes → ingredients extracted →<br>3-day grocery list minus pantry, by store section.</div></div></div>
+  <div class="ps" style="margin-top:10px">
+    <div id="food-grid">
+    <div>
+    <div class="card card-lg">
+      <div class="sec-hd"><div class="lbl" style="color:var(--green);margin-bottom:0">▸ RECIPES THIS WEEK</div><button class="sec-act" onclick="document.getElementById('rc-photo').click()">📷 Photo of recipe</button></div>
+      <input type="file" accept="image/*" id="rc-photo" style="display:none" onchange="onRecipePhoto(this)">
+      <div id="rc-list" style="margin-bottom:10px"></div>
+      <textarea class="inp" id="rc-text" rows="4" placeholder="Paste a recipe here — name plus ingredients. Any format works." style="resize:none;line-height:1.6;margin-bottom:8px"></textarea>
+      <button class="btn btn-g btn-full" id="rc-extract-btn" onclick="addRecipeFromText()">Extract ingredients & add</button>
+      <div class="ai-note" id="rc-ai-note"></div>
+    </div>
+    <div class="card card-la">
+      <div class="lbl" style="color:var(--amber)">▸ PANTRY — WHAT'S ALREADY HOME</div>
+      <div id="pantry-chips" style="margin-bottom:8px"></div>
+      <div style="display:flex;gap:8px">
+        <input class="inp" id="pantry-add" placeholder="e.g. olive oil, rice, frozen berries" onkeydown="if(event.key==='Enter')addPantry()">
+        <button class="btn btn-s" style="flex-shrink:0" onclick="addPantry()">+ Add</button>
+      </div>
+    </div>
+    </div>
+    <div>
+    <div class="card card-lb">
+      <div class="lbl" style="color:var(--blue)">▸ GROCERY LIST — NEXT 3 DAYS</div>
+      <div class="g2" style="margin-bottom:10px">
+        <div><label class="inp-label">Supermarket</label><select class="inp" id="gr-store" onchange="saveStore()"><option>Waitrose</option><option>M&S</option><option>Sainsbury's</option></select></div>
+        <div style="display:flex;align-items:flex-end"><button class="qtoggle" id="gr-shake" onclick="toggleShakeStaples()" style="padding:10px">+ Shake staples</button></div>
+      </div>
+      <button class="btn btn-g btn-full" style="font-size:13px;padding:13px" onclick="genGrocery()">Generate 3-day list</button>
+      <div style="font-size:10px;color:var(--txt3);margin-top:6px;text-align:center">One bulk list across all recipes — never per recipe. Delivery first.</div>
+      <div id="gr-list" style="margin-top:6px"></div>
+      <div id="gr-done-wrap" style="display:none;margin-top:10px">
+        <button class="btn btn-g btn-full" onclick="doneShopping()">✓ Done shopping — add ticked items to pantry</button>
+      </div>
+    </div>
+    </div>
+    </div>
+  </div>
 </div>
+
 
 <!-- FAST -->
 <div class="screen" id="s-fast">
@@ -486,7 +548,7 @@ nav,body,.screen{transition:none}
 <script>
 'use strict';
 // ═══ TRANSFORM v2 — no personal data lives in this file. All data: private repo + this device. ═══
-const V2_VERSION='2.3.0';
+const V2_VERSION='2.4.0';
 
 // ─── STORAGE (single doc) ─────────────────────────────────────────────────────
 const LS={
@@ -867,9 +929,9 @@ async function aiVision(prompt,imgB64){
     try{
       const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
         headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-        body:JSON.stringify({model:AI_MODELS[i],max_tokens:400,messages:[{role:'user',content:[
+        body:JSON.stringify({model:AI_MODELS[i],max_tokens:1200,messages:[{role:'user',content:imgB64?[
           {type:'image',source:{type:'base64',media_type:'image/jpeg',data:imgB64}},
-          {type:'text',text:prompt}]}]})});
+          {type:'text',text:prompt}]:[{type:'text',text:prompt}]}]})});
       if(r.status===404||r.status===400){lastErr=new Error('model');continue;}
       if(!r.ok)throw new Error('api '+r.status);
       const j=await r.json();
@@ -1127,6 +1189,231 @@ function renderMove(){
   document.getElementById('cd-list').textContent=cd||'';
 }
 
+// ─── FOOD: RECIPES → BULK GROCERY ────────────────────────────────────────────
+const SECTIONS=[
+  {id:'produce',n:'Fruit & Veg',c:'#22c55e'},
+  {id:'meatfish',n:'Meat & Fish',c:'#f87171'},
+  {id:'dairy',n:'Dairy & Eggs',c:'#60a5fa'},
+  {id:'bakery',n:'Bakery',c:'#d97706'},
+  {id:'ambient',n:'Cupboard',c:'#fb923c'},
+  {id:'frozen',n:'Frozen',c:'#38bdf8'},
+  {id:'drinks',n:'Drinks',c:'#a78bfa'},
+  {id:'other',n:'Other',c:'#999999'}
+];
+const SEC_KEYWORDS={
+  produce:['apple','banana','berr','spinach','lettuce','tomato','onion','garlic','pepper','carrot','potato','broccoli','cucumber','avocado','lemon','lime','herb','coriander','parsley','ginger','chilli','mushroom','courgette','aubergine','fruit','veg','salad','kale','celery','leek','cabbage','orange','grape','mango','melon'],
+  meatfish:['chicken','beef','lamb','mince','turkey','steak','fish','salmon','tuna','cod','prawn','bacon','sausage','ham'],
+  dairy:['milk','yogurt','yoghurt','cheese','butter','cream','egg','mozzarella','feta','halloumi','skyr','kefir'],
+  bakery:['bread','roll','wrap','tortilla','pitta','flatbread','naan','bagel','bun'],
+  frozen:['frozen','ice'],
+  drinks:['water','juice','coffee','tea','drink','kombucha'],
+  ambient:['rice','pasta','oat','flour','sugar','honey','oil','vinegar','sauce','paste','tin','can','chickpea','lentil','bean','spice','cumin','paprika','turmeric','cinnamon','salt','stock','noodle','quinoa','couscous','tahini','nut','seed','chia','flax','protein','collagen','creatine','ag1']
+};
+function guessSection(item){
+  const words=item.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+  if(words.indexOf('frozen')>=0)return'frozen';
+  for(const sec in SEC_KEYWORDS){
+    if(SEC_KEYWORDS[sec].some(function(k){return words.some(function(w){return w.indexOf(k)===0;});}))return sec;
+  }
+  return'other';
+}
+const SHAKE_STAPLES=[
+  {item:'Whey protein',qty:'',unit:'check tub',section:'ambient'},
+  {item:'Collagen powder',qty:'',unit:'check tub',section:'ambient'},
+  {item:'Creatine',qty:'',unit:'check tub',section:'ambient'},
+  {item:'Unsweetened almond milk',qty:2,unit:'L',section:'drinks'},
+  {item:'Chia seeds',qty:'',unit:'bag',section:'ambient'},
+  {item:'Ground flax seeds',qty:'',unit:'bag',section:'ambient'},
+  {item:'Berries (fresh or frozen)',qty:3,unit:'punnets',section:'produce'},
+  {item:'Spinach',qty:1,unit:'bag',section:'produce'},
+  {item:'AG1 sachets',qty:'',unit:'check box',section:'ambient'}
+];
+function normName(s){return String(s).toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim().replace(/s$/,'');}
+function localParseRecipe(text){
+  const lines=text.split('\n').map(function(l){return l.trim();}).filter(Boolean);
+  if(!lines.length)return null;
+  const name=lines[0].replace(/^#+\s*/,'').slice(0,60);
+  const ings=[];
+  const rx=/^[-•*]?\s*([\d¼½¾.,\/]+)?\s*(g|kg|ml|l|tbsp|tsp|cup|cups|scoop|scoops|clove|cloves|tin|tins|can|cans|pack|packs|handful|slices?|pieces?)?\s*(?:of\s+)?(.+)$/i;
+  for(let i=1;i<lines.length;i++){
+    const l=lines[i];
+    if(/^(method|instructions|steps|directions)/i.test(l))break;
+    const m=l.match(rx);
+    if(m&&m[3]&&m[3].length>1){
+      ings.push({item:m[3].replace(/[,.].*$/,'').trim(),qty:m[1]?m[1].trim():'',unit:m[2]||'',section:guessSection(m[3])});
+    }
+  }
+  if(!ings.length)return null;
+  return{name:name,ingredients:ings};
+}
+async function aiExtractRecipe(source,imgB64){
+  const prompt='Extract the recipe from '+(imgB64?'this photo':'this text')+(imgB64?'':(':\n---\n'+source+'\n---'))+
+  '\nReply with ONLY this JSON: {"name":string,"ingredients":[{"item":string,"qty":number|string,"unit":string,"section":"produce"|"meatfish"|"dairy"|"bakery"|"ambient"|"frozen"|"drinks"|"other"}]}. Use UK units. Keep item names short and shoppable (e.g. "chicken breast", not "diced free-range chicken breast").';
+  const txt=await aiVision(prompt,imgB64||null);
+  const j=extractJson(txt);
+  if(!j.name||!j.ingredients||!j.ingredients.length)throw new Error('bad recipe');
+  j.ingredients.forEach(function(i){if(!i.section||SECTIONS.every(function(s){return s.id!==i.section;}))i.section=guessSection(i.item);});
+  return j;
+}
+async function addRecipeFromText(){
+  const ta=document.getElementById('rc-text');
+  const text=ta.value.trim();
+  if(!text){toast('Paste a recipe first','err');return;}
+  const note=document.getElementById('rc-ai-note');
+  note.style.display='block';note.textContent='Extracting ingredients…';
+  let rec=null;
+  try{rec=await aiExtractRecipe(text,null);}
+  catch(e){rec=localParseRecipe(text);}
+  if(!rec){note.textContent='Could not read that — try "Name" on line 1, one ingredient per line.';return;}
+  DATA.recipes.push({id:uid(),name:rec.name,times:1,ingredients:rec.ingredients});
+  ta.value='';note.style.display='none';
+  save();renderFood();
+  toast('Added: '+rec.name+' ('+rec.ingredients.length+' ingredients) ✓','ok');
+}
+async function onRecipePhoto(input){
+  const f=input.files&&input.files[0];if(!f)return;input.value='';
+  const note=document.getElementById('rc-ai-note');
+  note.style.display='block';note.textContent='Reading the recipe photo…';
+  try{
+    const b64=await compressImage(f);
+    const rec=await aiExtractRecipe(null,b64);
+    DATA.recipes.push({id:uid(),name:rec.name,times:1,ingredients:rec.ingredients});
+    note.style.display='none';
+    save();renderFood();
+    toast('Added: '+rec.name+' ✓','ok');
+  }catch(e){
+    note.textContent=e.message==='nokey'?'Needs your AI key (Settings → AI) for photos — or paste the text instead.':'Could not read that photo — paste the text instead.';
+  }
+}
+function recipeTimes(id,d){
+  const r=DATA.recipes.find(function(x){return x.id===id;});if(!r)return;
+  r.times=Math.max(0,Math.min(6,(r.times||1)+d));
+  save();renderFood();
+}
+function removeRecipe(id){
+  DATA.recipes=DATA.recipes.filter(function(x){return x.id!==id;});
+  save();renderFood();toast('Recipe removed','ok');
+}
+function addPantry(){
+  const el=document.getElementById('pantry-add');
+  const v=el.value.trim();if(!v)return;
+  v.split(',').map(function(s){return s.trim();}).filter(Boolean).forEach(function(name){
+    if(!DATA.pantry.some(function(p){return normName(p.name)===normName(name);}))DATA.pantry.push({id:uid(),name:name});
+  });
+  el.value='';save();renderFood();
+}
+function removePantry(id){
+  DATA.pantry=DATA.pantry.filter(function(p){return p.id!==id;});
+  save();renderFood();
+}
+function pantryCovers(item){
+  const it=normName(item);
+  return DATA.pantry.some(function(p){
+    const pn=normName(p.name);
+    return it.indexOf(pn)>=0||pn.indexOf(it)>=0;
+  });
+}
+function saveStore(){
+  DATA.settings.store=document.getElementById('gr-store').value;
+  save();
+}
+function toggleShakeStaples(){
+  DATA.grocery.includeShake=!DATA.grocery.includeShake;
+  document.getElementById('gr-shake').className='qtoggle'+(DATA.grocery.includeShake?' on':'');
+  save();
+}
+function genGrocery(){
+  const active=DATA.recipes.filter(function(r){return(r.times||0)>0;});
+  if(!active.length&&!DATA.grocery.includeShake){toast('Add a recipe first (or flip on shake staples)','err');return;}
+  const map={};
+  active.forEach(function(r){
+    r.ingredients.forEach(function(ing){
+      const key=normName(ing.item)+'|'+String(ing.unit||'').toLowerCase();
+      const q=parseFloat(ing.qty);
+      if(map[key]){
+        if(!isNaN(q)&&map[key].numeric)map[key].qty+=q*(r.times||1);
+        else map[key].numeric=false;
+      }else{
+        map[key]={label:ing.item,qty:isNaN(q)?String(ing.qty||''):q*(r.times||1),unit:ing.unit||'',section:ing.section||guessSection(ing.item),numeric:!isNaN(q)};
+      }
+    });
+  });
+  if(DATA.grocery.includeShake){
+    SHAKE_STAPLES.forEach(function(s){
+      const key=normName(s.item)+'|staple';
+      if(!map[key])map[key]={label:s.item,qty:s.qty,unit:s.unit,section:s.section,numeric:false};
+    });
+  }
+  const items=[];
+  for(const k in map){
+    const m=map[k];
+    items.push({label:m.label,qty:m.qty,unit:m.unit,section:m.section,checked:false,covered:pantryCovers(m.label)});
+  }
+  const order={};SECTIONS.forEach(function(s,i){order[s.id]=i;});
+  items.sort(function(a,b){const oa=order[a.section]!==undefined?order[a.section]:9,ob=order[b.section]!==undefined?order[b.section]:9;return oa-ob||a.label.localeCompare(b.label);});
+  DATA.grocery.items=items;
+  DATA.grocery.generatedAt=new Date().toISOString();
+  DATA.grocery.store=DATA.settings.store;
+  save();renderFood();
+  const need=items.filter(function(i){return !i.covered;}).length;
+  const cov=items.length-need;
+  toast(need+' to buy · '+cov+' already home ✓','ok');
+}
+function toggleGroceryItem(i){
+  const it=DATA.grocery.items[i];
+  if(!it||it.covered)return;
+  it.checked=!it.checked;
+  save();renderFood();
+}
+function doneShopping(){
+  const bought=DATA.grocery.items.filter(function(i){return i.checked;});
+  if(!bought.length){toast('Nothing ticked yet','err');return;}
+  bought.forEach(function(b){
+    if(!DATA.pantry.some(function(p){return normName(p.name)===normName(b.label);}))DATA.pantry.push({id:uid(),name:b.label});
+  });
+  DATA.grocery.items=DATA.grocery.items.filter(function(i){return !i.checked;});
+  save();renderFood();
+  toast(bought.length+' items added to pantry ✓','ok');
+}
+function renderFood(){
+  const rl=document.getElementById('rc-list');if(!rl)return;
+  rl.innerHTML=DATA.recipes.length?DATA.recipes.map(function(r){
+    return'<details class="recipe-item"><summary><div style="flex:1;min-width:0"><div class="rc-name">'+esc(r.name)+'</div><div class="rc-meta">'+r.ingredients.length+' ingredients · tap for list</div></div>'+
+    '<div class="rc-times"><button class="rc-tbtn" onclick="event.preventDefault();recipeTimes('+r.id+',-1)">−</button><span class="rc-tval">'+(r.times||0)+'×</span><button class="rc-tbtn" onclick="event.preventDefault();recipeTimes('+r.id+',1)">+</button></div>'+
+    '<button class="mi-btn" onclick="event.preventDefault();removeRecipe('+r.id+')">×</button></summary>'+
+    '<div class="rc-ing">'+r.ingredients.map(function(i){return esc((i.qty?i.qty+' ':'')+(i.unit?i.unit+' ':'')+i.item);}).join(' · ')+'</div></details>';
+  }).join(''):'<div style="font-size:11px;color:var(--txt3);margin-bottom:4px">No recipes yet. Paste one below or photograph a cookbook page. "×" is how many times you\'ll cook it in the next 3 days.</div>';
+  const pc=document.getElementById('pantry-chips');
+  pc.innerHTML=DATA.pantry.length?DATA.pantry.map(function(p){
+    return'<span class="chip">'+esc(p.name)+'<button onclick="removePantry('+p.id+')">×</button></span>';
+  }).join(''):'<div style="font-size:11px;color:var(--txt3)">Empty. Add what you already have so the list skips it.</div>';
+  document.getElementById('gr-store').value=DATA.settings.store||'Waitrose';
+  document.getElementById('gr-shake').className='qtoggle'+(DATA.grocery.includeShake?' on':'');
+  const gl=document.getElementById('gr-list');
+  const items=DATA.grocery.items||[];
+  if(!items.length){gl.innerHTML='';document.getElementById('gr-done-wrap').style.display='none';return;}
+  let html='';let lastSec=null;
+  const covered=items.filter(function(i){return i.covered;});
+  items.forEach(function(it,i){
+    if(it.covered)return;
+    if(it.section!==lastSec){
+      const sec=SECTIONS.find(function(s){return s.id===it.section;})||SECTIONS[7];
+      html+='<div class="gi-sec"><span class="gi-dot" style="background:'+sec.c+'"></span>'+sec.n+'</div>';
+      lastSec=it.section;
+    }
+    html+='<div class="gi-row'+(it.checked?' checked':'')+'" onclick="toggleGroceryItem('+i+')"><div class="gi-box">'+(it.checked?'✓':'')+'</div><div class="gi-name">'+esc(it.label)+'</div><div class="gi-qty">'+esc((it.qty?it.qty+' ':'')+(it.unit||''))+'</div></div>';
+  });
+  if(covered.length){
+    html+='<div class="gi-sec"><span class="gi-dot" style="background:var(--txt3)"></span>Already home ('+covered.length+')</div>';
+    covered.forEach(function(it){
+      html+='<div class="gi-row covered"><div class="gi-box"></div><div class="gi-name">'+esc(it.label)+'</div><div class="gi-qty">pantry</div></div>';
+    });
+  }
+  const store=DATA.grocery.store||DATA.settings.store;
+  gl.innerHTML='<div style="font-size:10px;color:var(--txt3);margin-top:10px">'+esc(store)+' · Milton Keynes · generated '+new Date(DATA.grocery.generatedAt).toLocaleDateString('en-GB',{day:'numeric',month:'short'})+'</div>'+html;
+  document.getElementById('gr-done-wrap').style.display=items.some(function(i){return i.checked;})?'block':'none';
+}
+
 // ─── RENDER LOG ───────────────────────────────────────────────────────────────
 function renderLog(){
   const de=document.getElementById('log-date');if(!de)return;
@@ -1231,6 +1518,7 @@ function nav(id,btn){
   document.getElementById('s-'+id).scrollTop=0;
   if(id==='log')renderLog();
   if(id==='move')renderMove();
+  if(id==='food')renderFood();
   if(id==='dash'){renderDash();renderLadder();}
 }
 
