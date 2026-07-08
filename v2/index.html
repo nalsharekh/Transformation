@@ -319,10 +319,14 @@ nav,body,.screen{transition:none}
       <div class="sec-hd"><div class="lbl" style="margin-bottom:0">▸ MEALS</div><div style="font-size:10px;color:var(--txt3)" id="meal-totals"></div></div>
       <div id="meal-list" style="margin-bottom:10px"></div>
       <div style="border-top:1px solid var(--border);padding-top:10px">
-        <div class="sec-hd"><div style="font-size:9px;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase">Add meal / eat out</div><button class="sec-act" onclick="document.getElementById('food-photo').click()">📷 Photo</button></div>
+        <div class="sec-hd"><div style="font-size:9px;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase">Add meal / eat out</div><button class="sec-act" onclick="document.getElementById('food-photo').click()">📷 Photo of plate</button></div>
         <input type="file" accept="image/*" capture="environment" id="food-photo" style="display:none" onchange="onFoodPhoto(this)">
         <div class="ai-note" id="food-ai-note"></div>
-        <div class="frow"><input class="inp" id="cm-name" placeholder="e.g. Wagamama chicken ramen"></div>
+        <div class="g2" style="margin-bottom:8px">
+          <div><input class="inp" id="cm-rest" placeholder="Restaurant (if out)"></div>
+          <div><button class="btn btn-s btn-full" onclick="lookupDish()" style="padding:10px">🔎 Find dish macros</button></div>
+        </div>
+        <div class="frow"><input class="inp" id="cm-name" placeholder="Dish — e.g. chicken katsu curry"></div>
         <div class="g2" style="margin-bottom:8px">
           <div><div class="mi-wrap"><input class="inp" id="cm-kcal" type="number" placeholder="kcal"><span class="mi-unit">kcal</span></div></div>
           <div><input class="inp" type="time" id="cm-time"></div>
@@ -558,7 +562,7 @@ nav,body,.screen{transition:none}
 <script>
 'use strict';
 // ═══ TRANSFORM v2 — no personal data lives in this file. All data: private repo + this device. ═══
-const V2_VERSION='2.4.1';
+const V2_VERSION='2.4.2';
 
 // ─── STORAGE (single doc) ─────────────────────────────────────────────────────
 const LS={
@@ -874,13 +878,15 @@ function renderShakeCard(){
 // ─── MEALS ────────────────────────────────────────────────────────────────────
 let editingMealId=null;
 function addMeal(){
-  const name=document.getElementById('cm-name').value.trim();
+  let name=document.getElementById('cm-name').value.trim();
+  const rest=document.getElementById('cm-rest').value.trim();
   const kcal=parseInt(document.getElementById('cm-kcal').value);
   if(!name||!kcal){toast('Need a name and calories','err');return;}
+  if(rest&&name.toLowerCase().indexOf(rest.toLowerCase())<0)name=name+' — '+rest;
   const lg=ensureLog(logDate());
   lg.meals.push({id:uid(),time:document.getElementById('cm-time').value||new Date().toTimeString().slice(0,5),name:name,kcal:kcal,
-    p:parseInt(document.getElementById('cm-p').value)||0,c:parseInt(document.getElementById('cm-c').value)||0,f:parseInt(document.getElementById('cm-f').value)||0,src:'custom'});
-  ['cm-name','cm-kcal','cm-p','cm-c','cm-f'].forEach(function(id){document.getElementById(id).value='';});
+    p:parseInt(document.getElementById('cm-p').value)||0,c:parseInt(document.getElementById('cm-c').value)||0,f:parseInt(document.getElementById('cm-f').value)||0,src:rest?'eatout':'custom'});
+  ['cm-name','cm-rest','cm-kcal','cm-p','cm-c','cm-f'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('food-ai-note').style.display='none';
   afterLogSave();renderMeals();
   toast('Meal logged ✓','ok');
@@ -984,22 +990,41 @@ async function onFitbitPhoto(input){
     else note.style.display='none';
   }
 }
+function applyDishResult(j,note){
+  document.getElementById('cm-name').value=j.name||'Meal';
+  document.getElementById('cm-kcal').value=Math.round(j.kcal)||'';
+  document.getElementById('cm-p').value=Math.round(j.protein_g)||0;
+  document.getElementById('cm-c').value=Math.round(j.carbs_g)||0;
+  document.getElementById('cm-f').value=Math.round(j.fat_g)||0;
+  note.textContent=j.basis==='menu'?'Matched the menu item — using its published numbers. Check, then Log Meal.':'No exact menu match — best estimate. Adjust if it looks off, then Log Meal.';
+}
 async function onFoodPhoto(input){
   const f=input.files&&input.files[0];if(!f)return;input.value='';
   const note=document.getElementById('food-ai-note');
-  note.style.display='block';note.textContent='Estimating nutrition from the photo…';
+  const rest=document.getElementById('cm-rest').value.trim();
+  const hint=document.getElementById('cm-name').value.trim();
+  note.style.display='block';note.textContent=rest?'Checking the '+rest+' menu against your photo…':'Estimating nutrition from the photo…';
   try{
     const b64=await compressImage(f);
-    const txt=await aiVision('Estimate the nutrition of the food in this photo (UK portions). Reply with ONLY this JSON: {"name":string,"kcal":number,"protein_g":number,"carbs_g":number,"fat_g":number}. Best single estimate.',b64);
-    const j=extractJson(txt);
-    document.getElementById('cm-name').value=j.name||'Meal from photo';
-    document.getElementById('cm-kcal').value=Math.round(j.kcal)||'';
-    document.getElementById('cm-p').value=Math.round(j.protein_g)||0;
-    document.getElementById('cm-c').value=Math.round(j.carbs_g)||0;
-    document.getElementById('cm-f').value=Math.round(j.fat_g)||0;
-    note.textContent='Estimated — adjust if it looks off, then tap Log Meal.';
+    const txt=await aiVision('This is a photo of a meal I was served'+(rest?' at "'+rest+'" in the UK':'')+(hint?'. I think it is: "'+hint+'"':'')+'. If you can identify it as a specific known menu item from that restaurant, use its published UK nutrition figures. Otherwise estimate from what you see (UK portion sizes). Reply with ONLY this JSON: {"name":string,"kcal":number,"protein_g":number,"carbs_g":number,"fat_g":number,"basis":"menu"|"estimate"}.',b64);
+    applyDishResult(extractJson(txt),note);
   }catch(e){
-    if(e.message!=='nokey')note.textContent='Estimate failed — enter it manually.';
+    if(e.message!=='nokey')note.textContent='Could not read that — enter it manually.';
+    else note.style.display='none';
+  }
+}
+async function lookupDish(){
+  const rest=document.getElementById('cm-rest').value.trim();
+  const dish=document.getElementById('cm-name').value.trim();
+  const note=document.getElementById('food-ai-note');
+  if(!dish&&!rest){toast('Type the restaurant and dish first','err');return;}
+  if(!dish){toast('Type the dish name too','err');return;}
+  note.style.display='block';note.textContent='Looking up '+dish+(rest?' at '+rest:'')+'…';
+  try{
+    const txt=await aiVision('UK restaurant'+(rest?' "'+rest+'"':'')+', dish: "'+dish+'". If this is a known menu item, give its published UK nutrition. Otherwise give a best estimate for a standard restaurant portion. Reply with ONLY this JSON: {"name":string,"kcal":number,"protein_g":number,"carbs_g":number,"fat_g":number,"basis":"menu"|"estimate"}.',null);
+    applyDishResult(extractJson(txt),note);
+  }catch(e){
+    if(e.message!=='nokey')note.textContent='Lookup failed — enter it manually.';
     else note.style.display='none';
   }
 }
