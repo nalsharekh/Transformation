@@ -169,6 +169,21 @@ select.inp{-webkit-appearance:none}
   #food-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
 }
 
+/* HEALTH SCREEN */
+.hj-entry{background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:11px 12px;margin-bottom:7px}
+.hj-date{font-size:9px;color:var(--txt3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
+.hj-text{font-size:12px;color:var(--txt2);line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.ck-item{background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:11px 12px;margin-bottom:8px}
+.ck-item.overdue{border-color:#4a1a1a;background:#120a0a}
+.ck-item.soon{border-color:#3a2a00;background:#120f00}
+.ck-name{font-size:13px;font-weight:600;color:var(--txt)}
+.ck-meta{font-size:10px;color:var(--txt3);margin-top:2px;line-height:1.5}
+.ck-ask{font-size:10px;color:var(--blue);margin-top:6px;line-height:1.5}
+.ck-foot{display:flex;gap:6px;margin-top:9px;align-items:center}
+.ck-foot input{width:130px;padding:7px 8px;font-size:11px}
+@media (min-width:600px){
+  #health-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+}
 /* TOAST */
 #toast{position:fixed;bottom:calc(var(--nav) + var(--sb) + 14px);left:50%;transform:translateX(-50%) translateY(20px);background:#0e0e12;border:1px solid var(--border2);color:var(--txt);padding:10px 18px;border-radius:12px;font-size:12px;font-family:var(--f2);opacity:0;pointer-events:none;transition:all .25s;z-index:300;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -266,6 +281,7 @@ nav,body,.screen{transition:none}
             <div class="stat"><div class="sv" style="color:var(--purple)" id="t-weight">—</div><div class="sk">Weigh-in</div></div>
           </div>
         </div>
+        <div class="card card-la" id="d-checkup-notice" style="display:none;cursor:pointer" onclick="nav('health');switchHealthTab('checkup')"></div>
       </div>
       <div>
         <div class="card card-lp">
@@ -278,7 +294,6 @@ nav,body,.screen{transition:none}
           <div style="font-size:11px;color:var(--txt3);margin-bottom:10px;line-height:1.6">Fresh start. Three quick steps and the app is yours.</div>
           <div id="setup-list"></div>
         </div>
-        <div class="stub"><div class="se">⏱️</div><div class="st1">Next updates: Fast + Health</div><div class="st2">Fasting clock ports over from v1,<br>then the Checkup radar closes it out.</div></div>
       </div>
     </div>
   </div>
@@ -468,8 +483,50 @@ nav,body,.screen{transition:none}
 <!-- HEALTH -->
 <div class="screen" id="s-health">
   <div class="ph"><div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:1px solid var(--border)"><div><div style="font-size:9px;letter-spacing:.14em;color:var(--txt3);text-transform:uppercase">Journal · Bloods · Checkups</div><div class="big" style="margin-top:2px">Health</div></div><button class="hdr-gear" onclick="nav('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button></div></div>
-  <div class="ps" style="margin-top:10px"><div class="stub"><div class="se">🩺</div><div class="st1">Coming up</div><div class="st2">Journal and blood tests stay,<br>plus the new Checkup radar with due reminders.</div></div></div>
+  <div class="ps" style="margin-top:10px">
+    <div class="stabs">
+      <button class="stab on" id="ht-b-journal" onclick="switchHealthTab('journal')">Journal</button>
+      <button class="stab" id="ht-b-bloods" onclick="switchHealthTab('bloods')">Bloods</button>
+      <button class="stab" id="ht-b-checkup" onclick="switchHealthTab('checkup')">Checkups</button>
+    </div>
+    <div id="ht-journal">
+      <div id="health-grid">
+      <div>
+      <div class="card card-lg">
+        <div class="lbl" style="color:var(--green)">▸ NEW ENTRY</div>
+        <div class="frow"><input class="inp" type="date" id="hj-date"></div>
+        <div class="frow"><textarea class="inp" id="hj-text" rows="4" placeholder="How's the body today? Energy, joints, sleep, anything worth remembering at the weekly review." style="resize:none;line-height:1.6"></textarea></div>
+        <button class="btn btn-g btn-full" onclick="addJournal()">Save entry</button>
+        <div style="font-size:10px;color:var(--txt3);margin-top:8px;line-height:1.5">No AI reads this in the page — the deep look happens with Claude at the Sunday review.</div>
+      </div>
+      </div>
+      <div><div class="lbl" style="padding:4px 0 6px">▸ HISTORY</div><div id="hj-list"></div></div>
+      </div>
+    </div>
+    <div id="ht-bloods" style="display:none">
+      <div id="health-grid2">
+      <div class="card card-lr">
+        <div class="sec-hd"><div class="lbl" style="color:var(--red);margin-bottom:0">▸ NEW RESULT</div><button class="sec-act" onclick="document.getElementById('blood-photo').click()">📷 Photo of results</button></div>
+        <input type="file" accept="image/*" id="blood-photo" style="display:none" onchange="onBloodPhoto(this)">
+        <div class="ai-note" id="blood-ai-note"></div>
+        <div class="frow"><input class="inp" type="date" id="bl-date"></div>
+        <div class="frow"><textarea class="inp" id="bl-text" rows="4" placeholder="HbA1c: 36 mmol/mol&#10;Total cholesterol: 4.2&#10;Vitamin D: 62 nmol/L&#10;BP: 122/78" style="resize:none;line-height:1.6"></textarea></div>
+        <button class="btn btn-g btn-full" onclick="addBlood()">Save result</button>
+        <div style="font-size:10px;color:var(--txt3);margin-top:8px;line-height:1.5">These are notes for your GP conversation, not a diagnosis.</div>
+      </div>
+      <div><div class="lbl" style="padding:4px 0 6px">▸ RESULTS ON FILE</div><div id="bl-list"></div></div>
+      </div>
+    </div>
+    <div id="ht-checkup" style="display:none">
+      <div class="card card-lb" style="margin-bottom:10px">
+        <div class="lbl" style="color:var(--blue)">▸ CHECKUP RADAR</div>
+        <div style="font-size:11px;color:var(--txt3);line-height:1.6">The rolling schedule that matters at 42 on Concerta 72mg + Zoloft 100mg. Mark each one when done and the clock restarts. Blood-test results go in the Bloods tab.</div>
+      </div>
+      <div id="ck-list"></div>
+    </div>
+  </div>
 </div>
+
 
 <!-- SETTINGS -->
 <div class="screen" id="s-settings">
@@ -580,7 +637,7 @@ nav,body,.screen{transition:none}
 <script>
 'use strict';
 // ═══ TRANSFORM v2 — no personal data lives in this file. All data: private repo + this device. ═══
-const V2_VERSION='2.5.0';
+const V2_VERSION='2.6.0';
 
 // ─── STORAGE (single doc) ─────────────────────────────────────────────────────
 const LS={
@@ -1556,6 +1613,125 @@ function renderFast(){
   updateIfDisplay();
 }
 
+// ─── HEALTH: JOURNAL · BLOODS · CHECKUP RADAR ────────────────────────────────
+const CHECKUP_DEFAULTS=[
+  {id:'bp',name:'Blood pressure & pulse',months:6,ask:'Ask the GP or pharmacy: "BP and resting pulse check please — I take methylphenidate 72mg daily." Bring the app\'s resting-HR numbers.'},
+  {id:'lipids',name:'Lipid panel (cholesterol)',months:12,ask:'Ask: "Full lipid panel — total, LDL, HDL, triglycerides." Book as a fasting blood draw if they offer it.'},
+  {id:'hba1c',name:'HbA1c (blood sugar)',months:12,ask:'Ask: "HbA1c please" — usually bundled with the lipid draw in one appointment.'},
+  {id:'vitd',name:'Vitamin D',months:12,ask:'Ask: "Vitamin D level" — UK winters eat it; worth tracking yearly.'},
+  {id:'medrev',name:'Medication review (Concerta + Zoloft)',months:12,ask:'Ask: "Annual review of methylphenidate and sertraline — doses, sleep, appetite, mood." Mention the fasting pattern.'}
+];
+function getCheckups(){
+  if(!DATA.checkups||!DATA.checkups.length){
+    DATA.checkups=CHECKUP_DEFAULTS.map(function(c){return{id:c.id,name:c.name,months:c.months,lastDone:null,ask:c.ask};});
+    persistLocal();
+  }
+  return DATA.checkups;
+}
+function addMonths(iso,m){const d=isoToDate(iso);d.setMonth(d.getMonth()+m);return dateISO(d);}
+function checkupStatus(c){
+  if(!c.lastDone)return{state:'never',dueIso:null};
+  const dueIso=addMonths(c.lastDone,c.months);
+  const d=daysBetween(todayISO(),dueIso);
+  if(d<0)return{state:'overdue',dueIso:dueIso,days:d};
+  if(d<=30)return{state:'soon',dueIso:dueIso,days:d};
+  return{state:'ok',dueIso:dueIso,days:d};
+}
+function checkupsDueCount(){
+  return getCheckups().reduce(function(n,c){const s=checkupStatus(c).state;return n+((s==='overdue'||s==='never'||s==='soon')?1:0);},0);
+}
+function markCheckup(id){
+  const c=getCheckups().find(function(x){return x.id===id;});if(!c)return;
+  const inp=document.getElementById('ck-date-'+id);
+  const when=(inp&&inp.value)?inp.value:todayISO();
+  c.lastDone=when;
+  save();renderHealth();renderAll();
+  toast(c.name+' logged — next due '+addMonths(when,c.months),'ok');
+}
+function switchHealthTab(t){
+  ['journal','bloods','checkup'].forEach(function(x){
+    document.getElementById('ht-'+x).style.display=x===t?'block':'none';
+    document.getElementById('ht-b-'+x).className='stab'+(x===t?' on':'');
+  });
+}
+function addJournal(){
+  const d=document.getElementById('hj-date').value||todayISO();
+  const t=document.getElementById('hj-text').value.trim();
+  if(!t){toast('Write something first','err');return;}
+  DATA.journal.push({id:uid(),date:d,text:t});
+  document.getElementById('hj-text').value='';
+  save();renderHealth();
+  toast('Journal saved ✓','ok');
+}
+function delJournal(id){
+  if(!confirm('Delete this entry?'))return;
+  DATA.journal=DATA.journal.filter(function(j){return j.id!==id;});
+  save();renderHealth();
+}
+function addBlood(){
+  const d=document.getElementById('bl-date').value||todayISO();
+  const t=document.getElementById('bl-text').value.trim();
+  if(!t){toast('Nothing to save yet','err');return;}
+  DATA.bloods.push({id:uid(),date:d,text:t});
+  document.getElementById('bl-text').value='';
+  save();renderHealth();
+  toast('Result filed ✓ — bring it to the Sunday review','ok');
+}
+function delBlood(id){
+  if(!confirm('Delete this result?'))return;
+  DATA.bloods=DATA.bloods.filter(function(b){return b.id!==id;});
+  save();renderHealth();
+}
+async function onBloodPhoto(input){
+  const f=input.files&&input.files[0];if(!f)return;input.value='';
+  const note=document.getElementById('blood-ai-note');
+  note.style.display='block';note.textContent='Transcribing the results…';
+  try{
+    const b64=await compressImage(f);
+    const txt=await aiVision('This photo shows blood test / health check results. Transcribe every test name, value and unit EXACTLY as printed, one per line like "HbA1c: 36 mmol/mol". If a sample or report date is visible, include it. Reply with ONLY this JSON: {"date":"YYYY-MM-DD"|null,"values":string}. Do not interpret or comment on the values.',b64);
+    const j=extractJson(txt);
+    if(j.values)document.getElementById('bl-text').value=j.values;
+    if(j.date)document.getElementById('bl-date').value=j.date;
+    note.textContent='Transcribed — check against the paper, then Save result.';
+  }catch(e){
+    if(e.message!=='nokey')note.textContent='Could not read it — type the values in.';
+    else note.style.display='none';
+  }
+}
+function renderHealth(){
+  const hj=document.getElementById('hj-list');if(!hj)return;
+  if(!document.getElementById('hj-date').value)document.getElementById('hj-date').value=todayISO();
+  if(!document.getElementById('bl-date').value)document.getElementById('bl-date').value=todayISO();
+  const js=DATA.journal.slice().sort(function(a,b){return a.date<b.date?1:-1;}).slice(0,30);
+  hj.innerHTML=js.length?js.map(function(j){
+    return'<div class="hj-entry"><div class="hj-date"><span>'+j.date+'</span><button class="mi-btn" onclick="delJournal('+j.id+')">×</button></div><div class="hj-text">'+esc(j.text)+'</div></div>';
+  }).join(''):'<div style="font-size:11px;color:var(--txt3)">Nothing yet.</div>';
+  const bl=document.getElementById('bl-list');
+  const bs=DATA.bloods.slice().sort(function(a,b){return a.date<b.date?1:-1;}).slice(0,30);
+  bl.innerHTML=bs.length?bs.map(function(b){
+    return'<div class="hj-entry" style="border-left:3px solid var(--red)"><div class="hj-date"><span>'+b.date+'</span><button class="mi-btn" onclick="delBlood('+b.id+')">×</button></div><div class="hj-text">'+esc(b.text)+'</div></div>';
+  }).join(''):'<div style="font-size:11px;color:var(--txt3)">No results filed yet.</div>';
+  const ck=document.getElementById('ck-list');
+  ck.innerHTML=getCheckups().map(function(c){
+    const s=checkupStatus(c);
+    let badge,meta;
+    if(s.state==='never'){badge='<span class="badge badge-a">BOOK THE FIRST ONE</span>';meta='Never logged · every '+c.months+' months';}
+    else if(s.state==='overdue'){badge='<span class="badge badge-r">OVERDUE '+Math.abs(s.days)+'D</span>';meta='Last: '+c.lastDone+' · was due '+s.dueIso;}
+    else if(s.state==='soon'){badge='<span class="badge badge-a">DUE IN '+s.days+'D</span>';meta='Last: '+c.lastDone+' · due '+s.dueIso;}
+    else{badge='<span class="badge badge-g">OK</span>';meta='Last: '+c.lastDone+' · next '+s.dueIso;}
+    return'<div class="ck-item '+(s.state==='overdue'?'overdue':(s.state==='soon'||s.state==='never')?'soon':'')+'">'+
+    '<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div class="ck-name">'+esc(c.name)+'</div>'+badge+'</div>'+
+    '<div class="ck-meta">'+meta+'</div>'+
+    '<div class="ck-ask">'+esc(c.ask)+'</div>'+
+    '<div class="ck-foot"><input class="inp" type="date" id="ck-date-'+c.id+'" value="'+todayISO()+'"><button class="btn btn-g" style="padding:8px 12px;font-size:11px" onclick="markCheckup(\''+c.id+'\')">✓ Done</button></div>'+
+    '</div>';
+  }).join('');
+}
+function updateHealthBadge(){
+  const b=document.getElementById('badge-health');if(!b)return;
+  b.className='nav-badge'+(checkupsDueCount()>0?' show':'');
+}
+
 // ─── RENDER LOG ───────────────────────────────────────────────────────────────
 function renderLog(){
   const de=document.getElementById('log-date');if(!de)return;
@@ -1662,6 +1838,7 @@ function nav(id,btn){
   if(id==='move')renderMove();
   if(id==='food')renderFood();
   if(id==='fast')renderFast();
+  if(id==='health')renderHealth();
   if(id==='dash'){renderDash();renderLadder();}
 }
 
@@ -1752,10 +1929,19 @@ function renderSetup(){
 }
 
 // ─── RENDER ALL ───────────────────────────────────────────────────────────────
+function renderCheckupNotice(){
+  const el=document.getElementById('d-checkup-notice');if(!el)return;
+  const due=getCheckups().map(function(c){return{c:c,s:checkupStatus(c)};}).filter(function(x){return x.s.state==='overdue'||x.s.state==='never'||x.s.state==='soon';});
+  if(!due.length){el.style.display='none';return;}
+  const first=due[0];
+  el.style.display='block';
+  el.innerHTML='<div class="lbl" style="color:var(--amber)">▸ CHECKUP RADAR</div><div style="font-size:12px;color:var(--txt2);line-height:1.6">🩺 <b style="color:var(--txt)">'+esc(first.c.name)+'</b> '+(first.s.state==='overdue'?'is overdue':first.s.state==='never'?'needs its first booking':'is due soon')+(due.length>1?' — plus '+(due.length-1)+' more':'')+'. Tap for the list and what to ask.</div>';
+}
 function renderAll(){
   document.getElementById('d-datestr').textContent=fmtDateHdr(new Date());
   evalLadder();
   renderSettings();renderSetup();renderDash();renderLadder();
+  updateHealthBadge();renderCheckupNotice();
 }
 
 // ─── BOOT ─────────────────────────────────────────────────────────────────────
