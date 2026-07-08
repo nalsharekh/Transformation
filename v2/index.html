@@ -399,7 +399,17 @@ nav,body,.screen{transition:none}
       <div class="ai-note" id="rc-ai-note"></div>
     </div>
     <div class="card card-la">
-      <div class="lbl" style="color:var(--amber)">▸ PANTRY — WHAT'S ALREADY HOME</div>
+      <div class="sec-hd"><div class="lbl" style="color:var(--amber);margin-bottom:0">▸ PANTRY — WHAT'S ALREADY HOME</div><button class="sec-act" onclick="document.getElementById('fridge-photo').click()">📷 Fridge photo</button></div>
+      <input type="file" accept="image/*" capture="environment" id="fridge-photo" style="display:none" onchange="onFridgePhoto(this)">
+      <div class="ai-note" id="pantry-ai-note"></div>
+      <div id="fridge-review" style="display:none;background:var(--s2);border:1px solid var(--border2);border-radius:11px;padding:10px;margin-bottom:10px">
+        <div style="font-size:10px;color:var(--txt2);margin-bottom:8px;line-height:1.5">Spotted these — tap any that are wrong to drop them, then confirm.</div>
+        <div id="fridge-chips" style="margin-bottom:8px"></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-g" style="flex:1;font-size:11px" onclick="confirmFridgeItems()">Add to pantry</button>
+          <button class="btn btn-s" style="font-size:11px" onclick="cancelFridgeReview()">Cancel</button>
+        </div>
+      </div>
       <div id="pantry-chips" style="margin-bottom:8px"></div>
       <div style="display:flex;gap:8px">
         <input class="inp" id="pantry-add" placeholder="e.g. olive oil, rice, frozen berries" onkeydown="if(event.key==='Enter')addPantry()">
@@ -548,7 +558,7 @@ nav,body,.screen{transition:none}
 <script>
 'use strict';
 // ═══ TRANSFORM v2 — no personal data lives in this file. All data: private repo + this device. ═══
-const V2_VERSION='2.4.0';
+const V2_VERSION='2.4.1';
 
 // ─── STORAGE (single doc) ─────────────────────────────────────────────────────
 const LS={
@@ -1305,6 +1315,58 @@ function addPantry(){
 function removePantry(id){
   DATA.pantry=DATA.pantry.filter(function(p){return p.id!==id;});
   save();renderFood();
+}
+// Fridge photo → AI reads contents → review → pantry
+let fridgeCandidates=[];
+async function onFridgePhoto(input){
+  const f=input.files&&input.files[0];if(!f)return;input.value='';
+  const note=document.getElementById('pantry-ai-note');
+  note.style.display='block';note.textContent='Looking inside your fridge…';
+  try{
+    const b64=await compressImage(f);
+    const txt=await aiVision('This photo shows the inside of a fridge, freezer or food cupboard. List the distinct food and drink items you can identify with reasonable confidence. Reply with ONLY this JSON: {"items":[string]} — short shoppable UK names like "semi-skimmed milk", "cheddar", "eggs", "chicken breast". Max 25 items. Skip anything you cannot actually identify.',b64);
+    const j=extractJson(txt);
+    const seen={};
+    fridgeCandidates=(j.items||[]).map(function(s){return String(s).trim();}).filter(function(s){
+      if(!s||s.length<2)return false;
+      const n=normName(s);
+      if(seen[n])return false;seen[n]=1;
+      return !DATA.pantry.some(function(p){return normName(p.name)===n;});
+    }).slice(0,25).map(function(s){return{name:s,keep:true};});
+    note.style.display='none';
+    if(!fridgeCandidates.length){note.style.display='block';note.textContent='Nothing new spotted — everything I could see is already in your pantry.';return;}
+    renderFridgeReview();
+  }catch(e){
+    note.textContent=e.message==='nokey'?'Needs your AI key (Settings → AI).':'Could not read that photo — try better light or closer up.';
+  }
+}
+function renderFridgeReview(){
+  const wrap=document.getElementById('fridge-review');
+  const chips=document.getElementById('fridge-chips');
+  if(!fridgeCandidates.length){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  chips.innerHTML=fridgeCandidates.map(function(c,i){
+    return'<span class="chip" onclick="toggleFridgeItem('+i+')" style="cursor:pointer;'+(c.keep?'border-color:#1a4a34;color:var(--green)':'opacity:.4;text-decoration:line-through')+'">'+esc(c.name)+'</span>';
+  }).join('');
+}
+function toggleFridgeItem(i){
+  if(!fridgeCandidates[i])return;
+  fridgeCandidates[i].keep=!fridgeCandidates[i].keep;
+  renderFridgeReview();
+}
+function confirmFridgeItems(){
+  const kept=fridgeCandidates.filter(function(c){return c.keep;});
+  kept.forEach(function(c){
+    if(!DATA.pantry.some(function(p){return normName(p.name)===normName(c.name);}))DATA.pantry.push({id:uid(),name:c.name});
+  });
+  fridgeCandidates=[];
+  document.getElementById('fridge-review').style.display='none';
+  save();renderFood();
+  toast(kept.length+' items into pantry ✓ — regenerate the list to use them','ok');
+}
+function cancelFridgeReview(){
+  fridgeCandidates=[];
+  document.getElementById('fridge-review').style.display='none';
 }
 function pantryCovers(item){
   const it=normName(item);
