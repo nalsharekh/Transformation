@@ -83,6 +83,22 @@ select.inp{-webkit-appearance:none}
 .stub .se{font-size:26px;margin-bottom:8px}
 .stub .st1{font-size:13px;font-weight:600;color:var(--txt2)}
 .stub .st2{font-size:11px;color:var(--txt3);margin-top:4px;line-height:1.6}
+/* WEIGHT RING + LADDER */
+.prog-card{background:linear-gradient(135deg,#120f1a,#0c0a12);border:1px solid #251f38;border-radius:14px;padding:14px;margin-bottom:10px}
+.wr-stat{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0}
+.wr-k{font-size:9px;letter-spacing:.1em;color:var(--txt3);text-transform:uppercase}
+.wr-v{font-size:14px;font-family:var(--f1);font-weight:700}
+.lad-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.lad-row:last-child{border-bottom:none}
+.lad-node{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;border:1.5px solid var(--border2);color:var(--txt3);font-family:var(--f1);background:var(--s2)}
+.lad-row.done .lad-node{background:var(--green);border-color:var(--green);color:#000}
+.lad-row.cur .lad-node{border-color:var(--purple);color:var(--purple);box-shadow:0 0 0 3px #a78bfa22}
+.lad-body{flex:1;min-width:0}
+.lad-name{font-size:12px;font-weight:600;color:var(--txt3)}
+.lad-row.cur .lad-name{color:var(--txt)}
+.lad-row.done .lad-name{color:var(--txt2)}
+.lad-sub{font-size:9px;color:var(--txt3);margin-top:1px}
+.lad-pct{font-size:12px;font-family:var(--f1);font-weight:800;color:var(--purple);flex-shrink:0}
 /* TOAST */
 #toast{position:fixed;bottom:calc(var(--nav) + var(--sb) + 14px);left:50%;transform:translateX(-50%) translateY(20px);background:#0e0e12;border:1px solid var(--border2);color:var(--txt);padding:10px 18px;border-radius:12px;font-size:12px;font-family:var(--f2);opacity:0;pointer-events:none;transition:all .25s;z-index:300;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -130,21 +146,64 @@ nav,body,.screen{transition:none}
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
         <button class="hdr-gear" onclick="nav('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings</button>
         <div class="sync-row"><div class="sync-dot" id="sync-dot-home"></div><span id="sync-lbl-home">Local only</span></div>
+        <div style="display:flex;align-items:center;gap:5px;margin-top:2px">
+          <input class="inp" id="d-weight" type="number" step=".1" inputmode="decimal" placeholder="kg" style="width:74px;padding:6px 8px;font-size:14px;font-family:var(--f1);font-weight:700;text-align:center">
+          <button class="btn btn-g" style="padding:6px 10px;font-size:11px" onclick="logWeight()">✓</button>
+        </div>
       </div>
     </div>
   </div>
   <div class="ps" style="margin-top:10px">
     <div id="dash-grid">
       <div>
+        <div class="prog-card">
+          <div class="lbl" style="color:var(--purple)">▸ WEIGHT</div>
+          <div style="display:flex;align-items:center;gap:14px">
+            <div style="position:relative;width:150px;height:150px;flex-shrink:0">
+              <svg width="150" height="150" viewBox="0 0 150 150">
+                <circle cx="75" cy="75" r="64" fill="none" stroke="var(--s3)" stroke-width="11"/>
+                <circle id="w-ring" cx="75" cy="75" r="64" fill="none" stroke="var(--purple)" stroke-width="11" stroke-linecap="round" stroke-dasharray="402.1" stroke-dashoffset="402.1" style="transform-origin:75px 75px;transform:rotate(-90deg);transition:stroke-dashoffset 1s ease"/>
+              </svg>
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+                <div class="big" id="w-cur" style="font-size:30px">—</div>
+                <div style="font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:.08em">kg now</div>
+              </div>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div class="wr-stat"><span class="wr-k">Start</span><span class="wr-v" id="w-start">—</span></div>
+              <div class="wr-stat"><span class="wr-k">Target</span><span class="wr-v" style="color:var(--green)" id="w-tgt">—</span></div>
+              <div class="wr-stat"><span class="wr-k">Lost</span><span class="wr-v" style="color:var(--purple)" id="w-lost">—</span></div>
+              <div class="wr-stat"><span class="wr-k">To go</span><span class="wr-v" style="color:var(--orange)" id="w-togo">—</span></div>
+            </div>
+          </div>
+          <div style="height:1px;background:var(--border);margin:10px 0"></div>
+          <div style="display:flex;justify-content:space-between;gap:10px">
+            <div><div style="font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:.08em">Projected date</div><div style="font-size:14px;font-family:var(--f1);font-weight:700;margin-top:2px" id="w-proj">—</div></div>
+            <div style="text-align:right"><div style="font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:.08em">Trend</div><div style="font-size:14px;font-family:var(--f1);font-weight:700;margin-top:2px" id="w-rate">—</div></div>
+          </div>
+          <div id="w-hint" style="font-size:10px;color:var(--txt3);margin-top:8px;line-height:1.5"></div>
+        </div>
+        <div class="card card-lb">
+          <div class="lbl" style="color:var(--blue)">▸ TODAY</div>
+          <div class="g3">
+            <div class="stat"><div class="sv" style="color:var(--green)" id="t-steps">—</div><div class="sk">Steps</div></div>
+            <div class="stat"><div class="sv" style="color:var(--orange)" id="t-session">—</div><div class="sk">Session</div></div>
+            <div class="stat"><div class="sv" style="color:var(--purple)" id="t-weight">—</div><div class="sk">Weigh-in</div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card card-lp">
+          <div class="sec-hd"><div class="lbl" style="color:var(--purple);margin-bottom:0">▸ SPORT-READY LADDER</div><span class="badge badge-g" id="lad-badge" style="display:none">ON TRACK</span></div>
+          <div id="ladder-list"></div>
+          <div id="ladder-note" style="font-size:10px;color:var(--txt3);margin-top:8px;line-height:1.6"></div>
+        </div>
         <div class="card card-lg" id="setup-card">
           <div class="lbl" style="color:var(--green)">▸ GET SET UP</div>
           <div style="font-size:11px;color:var(--txt3);margin-bottom:10px;line-height:1.6">Fresh start. Three quick steps and the app is yours.</div>
           <div id="setup-list"></div>
         </div>
-        <div class="stub"><div class="se">🎯</div><div class="st1">Dashboard is next</div><div class="st2">Weight ring with projected date +<br>the Sport-Ready ladder land here<br>in the next update.</div></div>
-      </div>
-      <div>
-        <div class="stub"><div class="se">🏗️</div><div class="st1">v2 rebuild in progress</div><div class="st2">Shell, settings and cloud sync are live.<br>Screens arrive one at a time.</div></div>
+        <div class="stub"><div class="se">⚡</div><div class="st1">Next update: the Log screen</div><div class="st2">20-second quick-log, Fitbit screenshot reader,<br>and your one-tap morning shake.</div></div>
       </div>
     </div>
   </div>
@@ -248,7 +307,7 @@ nav,body,.screen{transition:none}
 <script>
 'use strict';
 // ═══ TRANSFORM v2 — no personal data lives in this file. All data: private repo + this device. ═══
-const V2_VERSION='2.0.1';
+const V2_VERSION='2.1.0';
 
 // ─── STORAGE (single doc) ─────────────────────────────────────────────────────
 const LS={
@@ -260,8 +319,8 @@ function defaultData(){
   return {
     schema:2,
     settings:{targetWeight:85,sessionsPerWeek:3,stepsTarget:8000,ifEatStart:'12:00',ifEatEnd:'20:00',store:'Waitrose'},
-    logs:{},            // logs[YYYY-MM-DD] = {weight,sleepBed,sleepWake,meds,mood,fitbit:{steps,sleepH,rhr},meals:[],ex:[],declines:[]}
-    weightLog:[],       // [{date,kg}]
+    logs:{},
+    weightLog:[],
     fasting:{current:null,sessions:[]},
     ladder:{stage:0,progress:0,lastEval:null,history:[]},
     recipes:[],
@@ -289,6 +348,161 @@ function getAiKey(){return localStorage.getItem('tfm5_aikey')||'';}
 // ─── DATE UTILS ───────────────────────────────────────────────────────────────
 function todayISO(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function fmtDateHdr(d){return d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});}
+function isoToDate(s){const p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2]);}
+function dateISO(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function isoAddDays(iso,n){const d=isoToDate(iso);d.setDate(d.getDate()+n);return dateISO(d);}
+function daysBetween(a,b){return Math.round((isoToDate(b)-isoToDate(a))/86400000);}
+function isoDow(iso){return isoToDate(iso).getDay();} // 0=Sun
+function fmtShort(d){return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}
+function ensureLog(date){
+  if(!DATA.logs[date])DATA.logs[date]={meals:[],ex:[],declines:[]};
+  return DATA.logs[date];
+}
+
+// ─── WEIGHT ───────────────────────────────────────────────────────────────────
+function logWeight(){
+  const el=document.getElementById('d-weight');
+  const kg=parseFloat(el.value);
+  if(!kg||kg<40||kg>250){toast('Enter a weight in kg','err');return;}
+  const t=todayISO();
+  ensureLog(t).weight=kg;
+  const i=DATA.weightLog.findIndex(function(w){return w.date===t;});
+  if(i>=0)DATA.weightLog[i].kg=kg;else DATA.weightLog.push({date:t,kg:kg});
+  DATA.weightLog.sort(function(a,b){return a.date<b.date?-1:1;});
+  el.value='';
+  save();renderDash();
+  toast('Weigh-in saved: '+kg.toFixed(1)+' kg ✓','ok');
+}
+function weightProjection(){
+  const wl=DATA.weightLog;
+  if(!wl.length)return{state:'none'};
+  const cur=wl[wl.length-1].kg,start=wl[0].kg,tgt=DATA.settings.targetWeight;
+  if(cur<=tgt)return{state:'done',cur:cur,start:start,tgt:tgt};
+  let pts=wl.filter(function(p){return p.date>=isoAddDays(todayISO(),-21);});
+  if(pts.length<3)pts=wl.slice(-6);
+  const span=pts.length>1?daysBetween(pts[0].date,pts[pts.length-1].date):0;
+  if(pts.length<2||span<3)return{state:'early',cur:cur,start:start,tgt:tgt};
+  const x0=pts[0].date;
+  let sx=0,sy=0,sxy=0,sxx=0,n=pts.length;
+  pts.forEach(function(p){const x=daysBetween(x0,p.date),y=p.kg;sx+=x;sy+=y;sxy+=x*y;sxx+=x*x;});
+  const slope=(n*sxy-sx*sy)/(n*sxx-sx*sx||1); // kg per day
+  const rate=slope*7;
+  if(slope>=-0.005)return{state:'flat',cur:cur,start:start,tgt:tgt,rate:rate};
+  const days=Math.round((cur-tgt)/(-slope));
+  if(days>550)return{state:'slow',cur:cur,start:start,tgt:tgt,rate:rate,days:days};
+  const d=new Date();d.setDate(d.getDate()+days);
+  return{state:'ok',cur:cur,start:start,tgt:tgt,rate:rate,date:d,days:days};
+}
+function renderDash(){
+  const t=todayISO(),log=DATA.logs[t]||{};
+  const p=weightProjection();
+  const ring=document.getElementById('w-ring');
+  const C=402.1;
+  document.getElementById('w-tgt').textContent=DATA.settings.targetWeight+' kg';
+  if(p.state==='none'){
+    document.getElementById('w-cur').textContent='—';
+    document.getElementById('w-start').textContent='—';
+    document.getElementById('w-lost').textContent='—';
+    document.getElementById('w-togo').textContent='—';
+    document.getElementById('w-proj').textContent='—';
+    document.getElementById('w-rate').textContent='—';
+    document.getElementById('w-hint').textContent='Type your weight in the box at the top and tap ✓ — the ring starts from your first weigh-in.';
+    ring.style.strokeDashoffset=C;
+  }else{
+    const pct=Math.max(0,Math.min(1,(p.start-p.cur)/Math.max(.1,(p.start-p.tgt))));
+    ring.style.strokeDashoffset=String(C*(1-pct));
+    document.getElementById('w-cur').textContent=p.cur.toFixed(1);
+    document.getElementById('w-start').textContent=p.start.toFixed(1)+' kg';
+    document.getElementById('w-lost').textContent=(p.start-p.cur>0?(p.start-p.cur).toFixed(1):'0.0')+' kg';
+    document.getElementById('w-togo').textContent=(p.cur-p.tgt>0?(p.cur-p.tgt).toFixed(1):'0.0')+' kg';
+    const projEl=document.getElementById('w-proj'),rateEl=document.getElementById('w-rate'),hint=document.getElementById('w-hint');
+    if(p.state==='done'){projEl.textContent='🎉 Target hit';rateEl.textContent='—';hint.textContent='Hold it for a month and the weight meter is done.';}
+    else if(p.state==='early'){projEl.textContent='Soon';rateEl.textContent='—';hint.textContent='A few more weigh-ins over the next days and the projected date appears.';}
+    else if(p.state==='flat'){projEl.textContent='Paused';rateEl.textContent=(p.rate>=0?'+':'')+p.rate.toFixed(1)+' kg/wk';hint.textContent='Trend is flat right now — the projection returns as soon as the line points down. Recoverable.';}
+    else if(p.state==='slow'){projEl.textContent='Paused';rateEl.textContent=p.rate.toFixed(2)+' kg/wk';hint.textContent='Moving, but very slowly — the projection returns when the trend picks up. Recoverable.';}
+    else{projEl.textContent=fmtShort(p.date);rateEl.textContent=p.rate.toFixed(1)+' kg/wk';hint.textContent='';}
+  }
+  const steps=log.fitbit&&log.fitbit.steps?log.fitbit.steps:null;
+  document.getElementById('t-steps').textContent=steps?steps.toLocaleString():'—';
+  document.getElementById('t-steps').style.color=steps&&steps>=DATA.settings.stepsTarget?'var(--green)':'var(--txt2)';
+  document.getElementById('t-session').textContent=log.session?'✓':'—';
+  document.getElementById('t-session').style.color=log.session?'var(--green)':'var(--txt2)';
+  document.getElementById('t-weight').textContent=log.weight?log.weight.toFixed(1):'—';
+  const wi=document.getElementById('d-weight');
+  if(log.weight&&!wi.value)wi.placeholder=log.weight.toFixed(1);
+}
+
+// ─── SPORT-READY LADDER ───────────────────────────────────────────────────────
+const STAGES=[
+  {name:'Foundation',sessions:12,desc:'Joint stability & control'},
+  {name:'Strength',sessions:16,desc:'Load, slowly and controlled'},
+  {name:'Swim',sessions:14,desc:'Build the engine'},
+  {name:'Ball-prep',sessions:14,desc:'Direction, deceleration, confidence'},
+  {name:'First game',sessions:0,desc:'Casual football or basketball'}
+];
+function ladRate(stage){return STAGES[stage].sessions?100/STAGES[stage].sessions:0;}
+function evalLadder(){
+  const L=DATA.ladder;
+  if(!L.lastEval){L.startDate=todayISO();L.lastEval=todayISO();persistLocal();return;}
+  let changed=false;
+  let d=L.lastEval;
+  const today=todayISO();
+  while(d<today&&L.stage<4){
+    d=isoAddDays(d,1);
+    if(d>=today)break; // commit fully completed days only
+    const lg=DATA.logs[d]||{};
+    if(lg.session){L.progress+=ladRate(L.stage);L.history.push({date:d,delta:+ladRate(L.stage).toFixed(1),why:'session'});changed=true;}
+    if(lg.fitbit&&lg.fitbit.steps>=DATA.settings.stepsTarget){L.progress+=1;L.history.push({date:d,delta:1,why:'steps'});changed=true;}
+    if(isoDow(d)===0){ // Sunday: close the week Mon–Sun
+      let count=0;
+      for(let i=0;i<7;i++){const dd=isoAddDays(d,-i);if(L.startDate&&dd<L.startDate)break;const l2=DATA.logs[dd]||{};if(l2.session)count++;}
+      const weekDays=L.startDate?Math.min(7,daysBetween(L.startDate,d)+1):7;
+      if(weekDays>=4){
+        const need=Math.round(DATA.settings.sessionsPerWeek*weekDays/7);
+        const deficit=Math.max(0,need-count);
+        if(deficit>0){L.progress=Math.max(0,L.progress-2*deficit);L.history.push({date:d,delta:-2*deficit,why:'week short '+count+'/'+need});changed=true;}
+      }
+    }
+    while(L.progress>=100&&L.stage<4){L.progress-=100;L.stage++;L.history.push({date:d,delta:0,why:'STAGE UP → '+STAGES[L.stage].name});changed=true;}
+    L.lastEval=d;
+  }
+  L.lastEval=today>L.lastEval?isoAddDays(today,-1):L.lastEval;
+  if(L.history.length>80)L.history=L.history.slice(-80);
+  if(changed)save();else persistLocal();
+}
+function ladderTodayBonus(){
+  const L=DATA.ladder;if(L.stage>=4)return 0;
+  const lg=DATA.logs[todayISO()]||{};
+  let b=0;
+  if(lg.session)b+=ladRate(L.stage);
+  if(lg.fitbit&&lg.fitbit.steps>=DATA.settings.stepsTarget)b+=1;
+  return b;
+}
+function renderLadder(){
+  const L=DATA.ladder;
+  const el=document.getElementById('ladder-list');if(!el)return;
+  const live=Math.min(100,L.progress+ladderTodayBonus());
+  el.innerHTML=STAGES.map(function(s,i){
+    const done=i<L.stage||(L.stage>=4&&i<=4);
+    const cur=i===L.stage&&L.stage<4;
+    let right='';
+    if(done)right='<span class="lad-pct" style="color:var(--green)">✓</span>';
+    else if(cur)right='<span class="lad-pct">'+Math.round(live)+'%</span>';
+    let bar=cur?'<div class="bar-track" style="margin-top:5px"><div class="bar-fill" style="width:'+live+'%;background:var(--purple)"></div></div>':'';
+    return '<div class="lad-row'+(done?' done':'')+(cur?' cur':'')+'"><div class="lad-node">'+(done?'✓':i+1)+'</div><div class="lad-body"><div class="lad-name">'+s.name+'</div><div class="lad-sub">'+s.desc+'</div>'+bar+'</div>'+right+'</div>';
+  }).join('');
+  const note=document.getElementById('ladder-note'),badge=document.getElementById('lad-badge');
+  if(L.stage>=4){note.textContent='Ladder complete. Book that first casual game — you earned it.';badge.style.display='none';return;}
+  const recent=L.history.slice(-14).filter(function(h){return h.delta<0&&daysBetween(h.date,todayISO())<=7;});
+  const lost=recent.reduce(function(a,h){return a+h.delta;},0);
+  if(lost<0){
+    note.textContent='Pulled back '+Math.abs(lost).toFixed(0)+'% this week from missed sessions. One session claws most of it back — fully recoverable.';
+    badge.style.display='none';
+  }else{
+    note.textContent='Each session moves this stage '+ladRate(L.stage).toFixed(0)+'%. Hitting your steps target adds 1% a day. Sessions log from the Move screen (next updates).';
+    badge.style.display=live>0?'inline-block':'none';
+  }
+}
 
 // ─── BASE64 (unicode-safe) ────────────────────────────────────────────────────
 function b64enc(str){const b=new TextEncoder().encode(str);let s='';for(let i=0;i<b.length;i+=0x8000)s+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));return btoa(s);}
@@ -400,7 +614,7 @@ function saveTargets(){
   if(t&&t>40&&t<200)DATA.settings.targetWeight=t;
   if(s&&s>=1&&s<=7)DATA.settings.sessionsPerWeek=s;
   if(st&&st>=1000)DATA.settings.stepsTarget=st;
-  save();toast('Targets saved ✓','ok');renderSettings();
+  save();toast('Targets saved ✓','ok');renderSettings();renderDash();renderLadder();
 }
 function renderSettings(){
   document.getElementById('set-target').value=DATA.settings.targetWeight;
@@ -453,7 +667,7 @@ function renderSetup(){
   const items=[
     {done:!!getGhToken(),txt:'Paste your sync token',sub:'Settings → Cloud Sync'},
     {done:!!getAiKey(),txt:'Paste your Anthropic key',sub:'Settings → AI'},
-    {done:(DATA.weightLog||[]).length>0,txt:'Log your first weigh-in',sub:'Arrives with the Log screen'}
+    {done:(DATA.weightLog||[]).length>0,txt:'Log your first weigh-in',sub:'Box at the top of Home'}
   ];
   el.innerHTML=items.map(function(i){return '<div class="chk-item'+(i.done?' done':'')+'" onclick="nav(\'settings\')"><div class="chk-ico">'+(i.done?'✓':'')+'</div><div class="chk-txt">'+i.txt+'</div><div style="font-size:9px;color:var(--txt3)">'+i.sub+'</div></div>';}).join('');
   const allDone=items.every(function(i){return i.done;});
@@ -464,7 +678,8 @@ function renderSetup(){
 // ─── RENDER ALL ───────────────────────────────────────────────────────────────
 function renderAll(){
   document.getElementById('d-datestr').textContent=fmtDateHdr(new Date());
-  renderSettings();renderSetup();
+  evalLadder();
+  renderSettings();renderSetup();renderDash();renderLadder();
 }
 
 // ─── BOOT ─────────────────────────────────────────────────────────────────────
@@ -472,7 +687,7 @@ renderAll();
 persistLocal();
 if(getGhToken())syncNow(false);
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&getGhToken())syncNow(false);});
-console.log('Transform v'+V2_VERSION);
+console.log('Transform v'+V2_VERSION); // build 2.1.0
 </script>
 </body>
 </html>
