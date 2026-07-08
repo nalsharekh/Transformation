@@ -115,7 +115,28 @@ select.inp{-webkit-appearance:none}
 .ai-note{font-size:10px;color:var(--blue);margin-top:6px;line-height:1.5;display:none}
 @media (min-width:600px){
   #log-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  #move-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
 }
+/* MOVE SCREEN */
+.ex-item{background:var(--s2);border:1px solid var(--border);border-radius:11px;padding:11px 12px;margin-bottom:7px;transition:border .2s}
+.ex-item.done{background:#0d1a0d;border-color:#1a3028}
+.ex-item.skipped{background:#1a0d0d;border-color:#2a1818;opacity:.75}
+.ex-item.swapped{border-color:#3a2a5a}
+.ex-name{font-size:13px;font-weight:600;color:var(--txt);line-height:1.3}
+.ex-sets{font-size:11px;color:var(--orange);font-family:var(--f1);font-weight:700;flex-shrink:0}
+.ex-cue{font-size:10px;color:var(--txt3);margin-top:3px;line-height:1.5}
+.ex-actions{display:flex;gap:5px;margin-top:9px}
+.exa{padding:6px 10px;border-radius:7px;border:none;font-size:10px;font-weight:600;cursor:pointer;font-family:var(--f2);letter-spacing:.03em;transition:all .15s}
+.exa:active{transform:scale(.95)}
+.exa-done{background:#00e5a022;color:var(--green);border:1px solid #00e5a033;flex:1}
+.exa-done.active{background:var(--green);color:#000}
+.exa-swap{background:#a78bfa22;color:var(--purple);border:1px solid #a78bfa33}
+.exa-skip{background:#f8717122;color:var(--red);border:1px solid #f8717133}
+.why-btn{width:100%;padding:13px;border-radius:11px;border:1.5px solid var(--border2);background:var(--s2);color:var(--txt);font-family:var(--f2);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px;text-align:left;padding-left:16px}
+.why-btn:active{border-color:var(--green)}
+.wk-dot{width:22px;height:22px;border-radius:50%;background:var(--s3);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--txt3)}
+.wk-dot.hit{background:var(--green);border-color:var(--green);color:#000;font-weight:800}
+
 /* TOAST */
 #toast{position:fixed;bottom:calc(var(--nav) + var(--sb) + 14px);left:50%;transform:translateX(-50%) translateY(20px);background:#0e0e12;border:1px solid var(--border2);color:var(--txt);padding:10px 18px;border-radius:12px;font-size:12px;font-family:var(--f2);opacity:0;pointer-events:none;transition:all .25s;z-index:300;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -220,7 +241,7 @@ nav,body,.screen{transition:none}
           <div style="font-size:11px;color:var(--txt3);margin-bottom:10px;line-height:1.6">Fresh start. Three quick steps and the app is yours.</div>
           <div id="setup-list"></div>
         </div>
-        <div class="stub"><div class="se">🏋️</div><div class="st1">Next update: the Move screen</div><div class="st2">Hypermobility-safe sessions with<br>Log / Swap / Skip on every exercise.</div></div>
+        <div class="stub"><div class="se">🧾</div><div class="st1">Next update: the Food screen</div><div class="st2">Recipes in → one bulk grocery list out,<br>by store section, minus your pantry.</div></div>
       </div>
     </div>
   </div>
@@ -298,8 +319,45 @@ nav,body,.screen{transition:none}
 <!-- MOVE -->
 <div class="screen" id="s-move">
   <div class="ph"><div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:1px solid var(--border)"><div><div style="font-size:9px;letter-spacing:.14em;color:var(--txt3);text-transform:uppercase">Hypermobility-Safe</div><div class="big" style="margin-top:2px">Move</div></div><button class="hdr-gear" onclick="nav('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button></div></div>
-  <div class="ps" style="margin-top:10px"><div class="stub"><div class="se">🏋️</div><div class="st1">Coming up</div><div class="st2">Stability-first exercise engine with smart swaps.<br>Cardio: walking, swimming, steps. Nothing else.</div></div></div>
+  <div class="ps" style="margin-top:10px">
+    <div id="move-grid">
+    <div>
+    <div class="card card-lp" style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><div style="font-size:9px;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase">Current stage</div><div style="font-size:16px;font-family:var(--f1);font-weight:800;color:var(--purple);margin-top:2px" id="mv-stage">—</div></div>
+        <div style="text-align:right"><div style="font-size:9px;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase">This week</div><div style="display:flex;gap:4px;margin-top:4px" id="mv-week"></div></div>
+      </div>
+    </div>
+    <div class="card card-lg">
+      <div class="sec-hd"><div class="lbl" style="color:var(--green);margin-bottom:0">▸ TODAY'S SESSION</div><button class="sec-act" onclick="regenSession()">⟳ New mix</button></div>
+      <div style="font-size:10px;color:var(--txt3);margin-bottom:10px;line-height:1.5">Controlled and stability-first. Stop two reps before failure. Nothing to end-range, no momentum.</div>
+      <div id="mv-list"></div>
+      <button class="btn btn-g btn-full" style="margin-top:8px;font-size:13px;padding:13px" id="mv-finish" onclick="finishSession()">Finish session</button>
+      <div style="font-size:10px;color:var(--txt3);margin-top:6px;text-align:center" id="mv-status"></div>
+    </div>
+    </div>
+    <div>
+    <div class="card card-lb">
+      <div class="lbl" style="color:var(--blue)">▸ CARDIO — WALK · SWIM · STEPS</div>
+      <div style="font-size:10px;color:var(--txt3);margin-bottom:10px;line-height:1.5">That's the whole cardio menu. Steps come in from Fitbit on the Log tab.</div>
+      <div class="g2" style="margin-bottom:8px">
+        <div><label class="inp-label">Minutes</label><input class="inp" type="number" id="cd-min" placeholder="30"></div>
+        <div style="display:flex;align-items:flex-end;gap:6px">
+          <button class="btn btn-s" style="flex:1" onclick="logCardio('walk')">🚶 Walk</button>
+          <button class="btn btn-s" style="flex:1" onclick="logCardio('swim')">🏊 Swim</button>
+        </div>
+      </div>
+      <div id="cd-list" style="font-size:11px;color:var(--txt2)"></div>
+    </div>
+    <div class="card card-la">
+      <div class="lbl" style="color:var(--amber)">▸ HOW THIS FEEDS THE LADDER</div>
+      <div style="font-size:11px;color:var(--txt3);line-height:1.7">Finish a session (3+ exercises done) → <b style="color:var(--txt2)">session counts</b> and the ladder moves. A swim of 20+ minutes counts as a session too. Skips are noted honestly — no drama, next session wins it back.</div>
+    </div>
+    </div>
+    </div>
+  </div>
 </div>
+
 
 <!-- FOOD -->
 <div class="screen" id="s-food">
@@ -383,6 +441,15 @@ nav,body,.screen{transition:none}
 </nav>
 
 <!-- MODALS -->
+<div class="modal" id="m-why"><div class="msheet"><div class="mhandle"></div>
+  <div class="lbl" id="why-title">▸ WHY NOT THIS ONE?</div>
+  <div style="font-size:12px;color:var(--txt2);margin-bottom:14px" id="why-exname"></div>
+  <button class="why-btn" onclick="applyWhy('pain')">🤕 Pain — <span style="color:var(--txt3);font-weight:400">swap to a different area or an easier version</span></button>
+  <button class="why-btn" onclick="applyWhy('noenergy')">🪫 No energy — <span style="color:var(--txt3);font-weight:400">switch to the 10-minute session</span></button>
+  <button class="why-btn" onclick="applyWhy('boring')">🥱 Boring — <span style="color:var(--txt3);font-weight:400">give me something different</span></button>
+  <button class="btn btn-s btn-full" style="margin-top:4px" onclick="closeModal('m-why')">Cancel</button>
+</div></div>
+
 <div class="modal" id="m-shake"><div class="msheet"><div class="mhandle"></div>
   <div class="lbl" style="color:var(--purple)">▸ MY SHAKE — INGREDIENTS</div>
   <div style="font-size:10px;color:var(--txt3);margin-bottom:10px;line-height:1.5">Fix any numbers against the real labels. Totals recalculate.</div>
@@ -419,7 +486,7 @@ nav,body,.screen{transition:none}
 <script>
 'use strict';
 // ═══ TRANSFORM v2 — no personal data lives in this file. All data: private repo + this device. ═══
-const V2_VERSION='2.2.0';
+const V2_VERSION='2.3.0';
 
 // ─── STORAGE (single doc) ─────────────────────────────────────────────────────
 const LS={
@@ -442,6 +509,7 @@ function defaultData(){
     bloods:[],
     checkups:[],
     presets:{shake:null},
+    exDeclines:[],
     meta:{updatedAt:new Date(0).toISOString(),device:null,createdAt:new Date().toISOString()}
   };
 }
@@ -612,7 +680,7 @@ function renderLadder(){
     note.textContent='Pulled back '+Math.abs(lost).toFixed(0)+'% this week from missed sessions. One session claws most of it back — fully recoverable.';
     badge.style.display='none';
   }else{
-    note.textContent='Each session moves this stage '+ladRate(L.stage).toFixed(0)+'%. Hitting your steps target adds 1% a day. Sessions log from the Move screen (next updates).';
+    note.textContent='Each session moves this stage '+ladRate(L.stage).toFixed(0)+'%. Hitting your steps target adds 1% a day. Sessions live on the Move tab.';
     badge.style.display=live>0?'inline-block':'none';
   }
 }
@@ -863,6 +931,202 @@ async function onFoodPhoto(input){
     else note.style.display='none';
   }
 }
+// ─── MOVE: HYPERMOBILITY-SAFE LIBRARY ────────────────────────────────────────
+// Rules baked in: stability-first, no end-range, no momentum, no jumping until late Ball-prep.
+// Cardio anywhere in this app = walking, swimming, steps. Nothing else, ever.
+const EX_LIB=[
+  {id:'deadbug',n:'Dead bug',s:'3×8 each side',r:'core',st:[0,1,2,3],cue:'Slow. Low back stays flat on the floor.',reg:'Arms-only dead bug',ten:1},
+  {id:'birddog',n:'Bird dog',s:'3×8 each side',r:'core',st:[0,1,2,3],cue:'Reach long, hips level, no twist.',reg:'Knee-lift only',ten:1},
+  {id:'sideplank_k',n:'Side plank, knees bent',s:'3×15s each',r:'core',st:[0,1],cue:'Short lever. Straight line, no sag.',reg:'Hold 8 seconds'},
+  {id:'pallof',n:'Pallof press (band)',s:'3×10',r:'core',st:[0,1,2,3],cue:'Resist the twist. Ribs down.',reg:'Half-kneeling, lighter band'},
+  {id:'plank_taps',n:'Plank shoulder taps',s:'3×10',r:'core',st:[1,2,3],cue:'Hips dead quiet, no swaying.',reg:'From knees'},
+  {id:'bridge',n:'Glute bridge',s:'3×12',r:'glutes',st:[0,1],cue:'Squeeze at top. Don’t overarch the back.',reg:'Hold 5s × 8',ten:1},
+  {id:'clam',n:'Clamshell',s:'3×12 each',r:'glutes',st:[0,1],cue:'Pelvis still. Small controlled range.',reg:'Without band'},
+  {id:'bandwalk',n:'Banded lateral walk',s:'3×10 steps',r:'glutes',st:[0,1,2,3],cue:'Knees track over toes. Stay springy, not floppy.',reg:'No band, slow steps'},
+  {id:'slbridge',n:'Single-leg glute bridge',s:'3×8 each',r:'glutes',st:[1,2,3],cue:'Hips level. Stop before shaking.',reg:'Two-leg bridge'},
+  {id:'wallpush',n:'Wall push-up',s:'3×12',r:'upper',st:[0],cue:'Elbows soft at the end — never locked.',reg:'Stand closer to wall',ten:1},
+  {id:'incpush',n:'Incline push-up',s:'3×10',r:'upper',st:[1,2,3],cue:'Body one straight line. No sag.',reg:'Higher surface',ten:1},
+  {id:'bandrow',n:'Band row',s:'3×12',r:'upper',st:[0,1,2,3],cue:'Shoulder blades down and back. Smooth.',reg:'Lighter band'},
+  {id:'wallslide',n:'Scapular wall slide',s:'3×10',r:'upper',st:[0,1],cue:'Ribs down, forearms glued to the wall.',reg:'Smaller range'},
+  {id:'sit2stand',n:'Sit-to-stand',s:'3×10',r:'legs',st:[0],cue:'Three seconds down. Knees track toes.',reg:'Higher chair',ten:1},
+  {id:'heelraise',n:'Heel raise (holding support)',s:'3×12',r:'legs',st:[0,1],cue:'Hold something. Slow on the way down.',reg:'Both feet, smaller range'},
+  {id:'gobsquat',n:'Goblet box squat',s:'3×8',r:'legs',st:[1,2,3],cue:'Sit to the box under control. No bounce off it.',reg:'Bodyweight to box'},
+  {id:'stepup',n:'Step-up, low box',s:'3×8 each',r:'legs',st:[1,2,3],cue:'Push through the heel. Control the way down.',reg:'Lower step'},
+  {id:'hinge',n:'Hip hinge / light RDL',s:'3×10',r:'legs',st:[1,2,3],cue:'Soft knees. Stop at mid-shin — never chase depth.',reg:'Dowel only, no weight'},
+  {id:'splitsq',n:'Split squat (hold support)',s:'3×8 each',r:'legs',st:[1,2,3],cue:'Hold rail or wall. Short range first.',reg:'Smaller range'},
+  {id:'farmer',n:'Farmer carry',s:'3×20m',r:'legs',st:[1,2,3],cue:'Tall posture. Grip firm, shoulders packed.',reg:'Lighter and shorter'},
+  {id:'latstep',n:'Lateral step & stick',s:'3×6 each',r:'agility',st:[3],cue:'Step, plant, hold 2s. Stepping — not jumping.',reg:'Smaller step'},
+  {id:'decel',n:'Walk-to-stop decelerations',s:'6×10m',r:'agility',st:[3],cue:'Brisk walk, brake smoothly over two steps.',reg:'Slower pace'},
+  {id:'amarch',n:'A-march',s:'3×20m',r:'agility',st:[3],cue:'March tall. Controlled knee drive, no bounce.',reg:'Shorter distance'},
+  {id:'linehop',n:'Tiny line hops — late stage only',s:'2×10',r:'agility',st:[3],cue:'Only if 100% pain-free for 2+ weeks. Tiny, quiet hops.',reg:'Slow step-overs instead'}
+];
+const STAGE_PATTERNS=[
+  ['core','glutes','legs','upper','core'],
+  ['legs','glutes','upper','core','legs'],
+  ['core','glutes','legs'],
+  ['agility','legs','core','glutes','agility']
+];
+function weekKey(iso){const dow=isoDow(iso);return isoAddDays(iso,-((dow+6)%7));} // Monday of that week
+function exDeclinedThisWeek(id){
+  const wk=weekKey(todayISO());
+  return (DATA.exDeclines||[]).some(function(d){return d.id===id&&d.week===wk;});
+}
+function recordDecline(id,reason){
+  if(!DATA.exDeclines)DATA.exDeclines=[];
+  DATA.exDeclines.push({id:id,week:weekKey(todayISO()),reason:reason});
+  const cutoff=isoAddDays(todayISO(),-28);
+  DATA.exDeclines=DATA.exDeclines.filter(function(d){return d.week>=cutoff;});
+}
+function recentExIds(days){
+  const ids={};
+  for(let i=1;i<=days;i++){
+    const lg=DATA.logs[isoAddDays(todayISO(),-i)];
+    if(lg&&lg.ex)lg.ex.forEach(function(e){ids[e.id]=1;});
+  }
+  return ids;
+}
+function stagePool(stage){
+  return EX_LIB.filter(function(e){return e.st.indexOf(Math.min(stage,3))>=0;});
+}
+function pickEx(region,stage,excludeIds,allowRecent){
+  const recent=recentExIds(5);
+  let pool=stagePool(stage).filter(function(e){
+    return e.r===region&&excludeIds.indexOf(e.id)<0&&!exDeclinedThisWeek(e.id)&&(allowRecent||!recent[e.id]);
+  });
+  if(!pool.length)pool=stagePool(stage).filter(function(e){return e.r===region&&excludeIds.indexOf(e.id)<0&&!exDeclinedThisWeek(e.id);});
+  if(!pool.length)pool=stagePool(stage).filter(function(e){return e.r===region&&excludeIds.indexOf(e.id)<0;});
+  if(!pool.length)return null;
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+function sessionEntry(e){return{id:e.id,name:e.n,sets:e.s,region:e.r,cue:e.cue,status:'pending'};}
+function genSession(force){
+  const lg=ensureLog(todayISO());
+  if(lg.ex&&lg.ex.length&&!force)return;
+  const stage=Math.min(DATA.ladder.stage,3);
+  const pattern=STAGE_PATTERNS[stage];
+  const chosen=[];const ids=[];
+  pattern.forEach(function(region){
+    const e=pickEx(region,stage,ids,false);
+    if(e){chosen.push(sessionEntry(e));ids.push(e.id);}
+  });
+  const keep=(lg.ex||[]).filter(function(e){return e.status==='done'||e.status==='skipped';});
+  const keepIds=keep.map(function(e){return e.id;});
+  lg.ex=keep.concat(chosen.filter(function(e){return keepIds.indexOf(e.id)<0;})).slice(0,6);
+  save();
+}
+function regenSession(){genSession(true);renderMove();toast('New mix ✓','ok');}
+function markExDone(i){
+  const lg=ensureLog(todayISO());
+  if(!lg.ex||!lg.ex[i])return;
+  lg.ex[i].status=lg.ex[i].status==='done'?'pending':'done';
+  save();renderMove();
+}
+let whyCtx=null;
+function openWhy(i,mode){
+  const lg=DATA.logs[todayISO()];if(!lg||!lg.ex||!lg.ex[i])return;
+  whyCtx={i:i,mode:mode};
+  document.getElementById('why-title').textContent=mode==='skip'?'▸ SKIPPING — WHY?':'▸ SWAP — WHY?';
+  document.getElementById('why-exname').textContent=lg.ex[i].name;
+  openModal('m-why');
+}
+function tenMinuteSession(stage){
+  const pool=stagePool(stage).filter(function(e){return e.ten;});
+  return pool.slice(0,3).map(sessionEntry);
+}
+function applyWhy(reason){
+  if(!whyCtx)return;
+  const lg=ensureLog(todayISO());
+  const i=whyCtx.i,mode=whyCtx.mode;
+  const ex=lg.ex[i];if(!ex){closeModal('m-why');return;}
+  const stage=Math.min(DATA.ladder.stage,3);
+  recordDecline(ex.id,reason);
+  if(mode==='skip'){
+    ex.status='skipped';ex.reason=reason;
+    toast(reason==='pain'?'Skipped — pain noted. Smart call.':'Skipped — noted, no drama.','ok');
+  }else if(reason==='noenergy'){
+    const done=lg.ex.filter(function(e){return e.status==='done';});
+    const doneIds=done.map(function(e){return e.id;});
+    lg.ex=done.concat(tenMinuteSession(stage).filter(function(e){return doneIds.indexOf(e.id)<0;}));
+    toast('10-minute version — showing up beats perfect.','ok');
+  }else{
+    const ids=lg.ex.map(function(e){return e.id;});
+    let rep=null;
+    if(reason==='pain'){
+      const others=['core','glutes','upper','legs'].filter(function(r){return r!==ex.region;});
+      for(let k=0;k<others.length&&!rep;k++)rep=pickEx(others[k],stage,ids,true);
+      if(!rep){
+        const lib=EX_LIB.filter(function(e){return e.id===ex.id;})[0];
+        if(lib){ex.name=lib.n+' — easier: '+lib.reg;ex.cue='Easier version. Stop if anything hurts.';save();renderMove();closeModal('m-why');return;}
+      }
+    }else{
+      rep=pickEx(ex.region,stage,ids,false)||pickEx(ex.region,stage,ids,true);
+      if(!rep){
+        const others=['core','glutes','upper','legs'].filter(function(r){return r!==ex.region;});
+        for(let k=0;k<others.length&&!rep;k++)rep=pickEx(others[k],stage,ids,true);
+      }
+    }
+    if(rep){lg.ex[i]=sessionEntry(rep);lg.ex[i].swapped=true;toast('Swapped ✓','ok');}
+    else toast('Nothing left to swap to this week','err');
+  }
+  save();renderMove();closeModal('m-why');
+}
+function finishSession(){
+  const lg=ensureLog(todayISO());
+  const done=(lg.ex||[]).filter(function(e){return e.status==='done';}).length;
+  if(done<3){toast(done+' done — need 3+ for the session to count','err');return;}
+  lg.session=true;
+  save();renderMove();renderDash();renderLadder();
+  toast('Session counts ✓ Ladder +'+ladRate(Math.min(DATA.ladder.stage,3)).toFixed(0)+'%','ok');
+}
+function logCardio(type){
+  const min=parseInt(document.getElementById('cd-min').value)||0;
+  if(!min||min<5){toast('Enter minutes first','err');return;}
+  const lg=ensureLog(todayISO());
+  if(!lg.cardio)lg.cardio=[];
+  lg.cardio.push({type:type,min:min,time:new Date().toTimeString().slice(0,5)});
+  document.getElementById('cd-min').value='';
+  if(type==='swim'&&min>=20&&!lg.session){
+    lg.session=true;
+    toast('Swim logged — counts as today’s session ✓','ok');
+  }else{
+    toast((type==='swim'?'Swim':'Walk')+' logged ✓','ok');
+  }
+  save();renderMove();renderDash();renderLadder();
+}
+function renderMove(){
+  const el=document.getElementById('mv-list');if(!el)return;
+  genSession(false);
+  const lg=DATA.logs[todayISO()]||{};
+  document.getElementById('mv-stage').textContent=STAGES[Math.min(DATA.ladder.stage,4)].name;
+  const ex=lg.ex||[];
+  el.innerHTML=ex.length?ex.map(function(e,i){
+    const st=e.status||'pending';
+    return'<div class="ex-item '+st+(e.swapped?' swapped':'')+'">'+
+    '<div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div class="ex-name">'+esc(e.name)+(st==='skipped'?' <span style="font-size:9px;color:var(--red)">skipped</span>':'')+'</div><div class="ex-sets">'+esc(e.sets)+'</div></div>'+
+    '<div class="ex-cue">'+esc(e.cue||'')+'</div>'+
+    (st!=='skipped'?'<div class="ex-actions">'+
+      '<button class="exa exa-done'+(st==='done'?' active':'')+'" onclick="markExDone('+i+')">'+(st==='done'?'✓ Done':'Done')+'</button>'+
+      '<button class="exa exa-swap" onclick="openWhy('+i+',\'swap\')">⇄ Swap</button>'+
+      '<button class="exa exa-skip" onclick="openWhy('+i+',\'skip\')">Skip</button>'+
+    '</div>':'')+
+    '</div>';
+  }).join(''):'<div style="font-size:11px;color:var(--txt3)">No session generated.</div>';
+  const done=ex.filter(function(e){return e.status==='done';}).length;
+  document.getElementById('mv-status').textContent=lg.session?'Session banked for today ✓':done+' of '+ex.length+' done — 3+ makes it count';
+  document.getElementById('mv-finish').textContent=lg.session?'Session done ✓':'Finish session';
+  const wk=weekKey(todayISO());
+  let dots='';
+  for(let i=0;i<7;i++){
+    const d=isoAddDays(wk,i);
+    const l=DATA.logs[d]||{};
+    const future=d>todayISO();
+    dots+='<div class="wk-dot'+(l.session?' hit':'')+'" style="'+(future?'opacity:.35':'')+'">'+['M','T','W','T','F','S','S'][i]+'</div>';
+  }
+  document.getElementById('mv-week').innerHTML=dots;
+  const cd=(lg.cardio||[]).map(function(c){return(c.type==='swim'?'🏊 ':'🚶 ')+c.min+' min';}).join(' · ');
+  document.getElementById('cd-list').textContent=cd||'';
+}
+
 // ─── RENDER LOG ───────────────────────────────────────────────────────────────
 function renderLog(){
   const de=document.getElementById('log-date');if(!de)return;
@@ -966,6 +1230,7 @@ function nav(id,btn){
   if(nb)nb.classList.add('on');
   document.getElementById('s-'+id).scrollTop=0;
   if(id==='log')renderLog();
+  if(id==='move')renderMove();
   if(id==='dash'){renderDash();renderLadder();}
 }
 
