@@ -325,7 +325,8 @@ nav,body,.screen{transition:none}
       </div>
     </div>
     <div class="card card-lb">
-      <div class="sec-hd"><div class="lbl" style="color:var(--blue);margin-bottom:0">▸ FITBIT</div><button class="sec-act" onclick="document.getElementById('fb-photo').click()">📷 Read my screenshot</button></div>
+      <div class="sec-hd"><div class="lbl" style="color:var(--blue);margin-bottom:0">▸ FITBIT / PHONE STEPS</div><button class="sec-act" onclick="document.getElementById('fb-photo').click()">📷 Read a screenshot</button></div>
+      <div style="font-size:10px;color:var(--txt3);margin-bottom:8px;line-height:1.5">Works with Fitbit or Samsung Health screenshots — no watch, no problem.</div>
       <input type="file" accept="image/*" id="fb-photo" style="display:none" onchange="onFitbitPhoto(this)">
       <div class="g3" style="margin-bottom:10px">
         <div><label class="inp-label">Steps</label><input class="inp" type="number" id="fb-steps" placeholder="—"></div>
@@ -637,7 +638,7 @@ nav,body,.screen{transition:none}
 <script>
 'use strict';
 // ═══ TRANSFORM v2 — no personal data lives in this file. All data: private repo + this device. ═══
-const V2_VERSION='2.6.0';
+const V2_VERSION='2.6.1';
 
 // ─── STORAGE (single doc) ─────────────────────────────────────────────────────
 const LS={
@@ -1053,7 +1054,7 @@ async function onFitbitPhoto(input){
   note.style.display='block';note.textContent='Reading your Fitbit screenshot…';
   try{
     const b64=await compressImage(f);
-    const txt=await aiVision('This is a screenshot of a Fitbit app screen. Extract what is visible. Reply with ONLY this JSON, using null for anything not shown: {"steps":number|null,"sleepHours":number|null,"restingHR":number|null}. sleepHours as decimal hours (e.g. 7h 24m = 7.4).',b64);
+    const txt=await aiVision('This is a screenshot from a health or fitness app (Fitbit, Samsung Health, Google Fit or similar). Extract what is visible. Reply with ONLY this JSON, using null for anything not shown: {"steps":number|null,"sleepHours":number|null,"restingHR":number|null}. sleepHours as decimal hours (e.g. 7h 24m = 7.4).',b64);
     const j=extractJson(txt);
     let got=[];
     if(j.steps){document.getElementById('fb-steps').value=Math.round(j.steps);got.push(Math.round(j.steps).toLocaleString()+' steps');}
